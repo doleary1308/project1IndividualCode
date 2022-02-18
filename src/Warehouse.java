@@ -57,7 +57,7 @@ public class Warehouse implements Serializable {
         return ClientList.getClients();
     }
 
-    public String clientIDGen()
+    public String newIDGen()
     {
         int leftLimit = 97; // letter 'a'
         int rightLimit = 122; // letter 'z'

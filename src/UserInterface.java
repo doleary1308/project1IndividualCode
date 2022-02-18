@@ -102,7 +102,7 @@ public class UserInterface{
     public void addClient() {
         String name = getToken("Enter client name");
         String address = getToken("Enter address");
-        String id = warehouse.clientIDGen();
+        String id = warehouse.newIDGen();
         System.out.println("A new ID was generated for the client");
         Client result;
         result = warehouse.addClient(name, address, id);
@@ -118,7 +118,8 @@ public class UserInterface{
           String name = getToken("Enter product name");
           String qty = getToken("Enter product quantity");
           String salePrice = getToken("Enter product sale price");
-          String id = getToken("Enter product ID");
+            String id = warehouse.newIDGen();
+            System.out.println("A new ID was generated for the product");
           result = warehouse.addProduct(name, qty, salePrice, id);
           if (result != null) {
             System.out.println(result);
@@ -152,6 +153,7 @@ public class UserInterface{
         } while (!check2);
 
         Client.addProductWishlist(productPass, clientPass);
+        System.out.println(productPass.getName() + " added to the wishlist of " + clientPass.getName() );
     }
 
     public void getWishList()
@@ -222,7 +224,7 @@ public class UserInterface{
                                     break;
             case DISPLAY_CLIENTS:   showClients();
                                     break;
-            case DISPLAY_CLIENT_WISHLIST: /*Not defined yet*/
+            case DISPLAY_CLIENT_WISHLIST: getWishList();
                                     break;
             case SAVE:              save();
                                     break;

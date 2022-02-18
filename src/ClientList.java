@@ -30,7 +30,7 @@ public class ClientList implements Serializable {
         for (int i=0; i<clients.size(); i++) //Check against existing client IDs
         {
             tempClient = (Client) clients.get(i);
-            if(id == tempClient.getId()){searchedClient = tempClient;}
+            if(id.equals(tempClient.getId() ) ){searchedClient = tempClient;}
         }
         return searchedClient;
     }

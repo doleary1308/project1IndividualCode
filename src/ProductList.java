@@ -34,7 +34,7 @@ public class ProductList implements Serializable {
         for (int i=0; i<products.size(); i++) //Check against existing client IDs
         {
             tempProduct = (Product) products.get(i);
-            if(id == tempProduct.getId()){searchedProduct = tempProduct;}
+            if(id.equals(tempProduct.getId() ) ){searchedProduct = tempProduct;}
         }
         return searchedProduct;
     }
