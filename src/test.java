@@ -2,7 +2,7 @@ import java.util.*;
 import java.lang.*;
 import java.io.*;
 
-public class test{
+/*public class test{
 
     public static void main(String[] s){
 
@@ -43,4 +43,4 @@ public class test{
         }
 
     }
-}
+}*/
