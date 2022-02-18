@@ -7,7 +7,7 @@ public class ProductList implements Serializable {
     private List products = new LinkedList();
     private static ProductList productList;
 
-    private ProductList(){
+    public ProductList(){
     }
 
     public static ProductList instance(){
