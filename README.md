@@ -1,7 +1,6 @@
-## Getting Started
+## Project 1 Stage 1 code
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
-
+This project contains the code for the Project 1 Stage 1 Code.
 ## Folder Structure
 
 The workspace contains two folders by default, where:
