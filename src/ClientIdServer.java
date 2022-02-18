@@ -6,6 +6,10 @@ public class ClientIdServer implements Serializable {
     private int idCounter;
     private static ClientIdServer server;
     
+    private ClientIdServer(){
+        idCounter = 1;
+    }
+    
     public static ClientIdServer instance() {
         if (server == null) {
           return (server = new ClientIdServer());
@@ -45,7 +49,7 @@ public class ClientIdServer implements Serializable {
         try {
           input.defaultReadObject();
           if (server == null) {
-            server = (CientIdServer) input.readObject();
+            server = (ClientIdServer) input.readObject();
           } else {
             input.readObject();
           }
