@@ -7,8 +7,7 @@ public class ProductList implements Serializable {
     private List products = new LinkedList();
     private static ProductList productList;
 
-    public ProductList(){
-    }
+    public ProductList(){}
 
     public static ProductList instance(){
         if(productList == null){
@@ -26,6 +25,18 @@ public class ProductList implements Serializable {
 
     public Iterator getProducts(){
         return products.iterator();
+    }
+
+    public Product checkAgainstProductList(String id)
+    {
+        Product searchedProduct = null;
+        Product tempProduct;
+        for (int i=0; i<products.size(); i++) //Check against existing client IDs
+        {
+            tempProduct = (Product) products.get(i);
+            if(id == tempProduct.getId()){searchedProduct = tempProduct;}
+        }
+        return searchedProduct;
     }
 
 }

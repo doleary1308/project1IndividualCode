@@ -46,6 +46,9 @@ public class Warehouse implements Serializable {
         return null;
     }
 
+    public Product checkAgainstProductList(String id) {return productList.checkAgainstProductList(id);}
+    public Client checkAgainstClientList(String id) {return clientList.checkAgainstClientList(id);}
+
     public Iterator getProducts(){
         return productList.getProducts();
     }

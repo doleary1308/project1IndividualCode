@@ -73,7 +73,7 @@ public class UserInterface{
     public int getCommand() {
         do {
           try {
-            int value = Integer.parseInt(getToken("Enter command:" + HELP + " for help"));
+            int value = Integer.parseInt(getToken("Enter command: " + HELP + " for help"));
             if (value >= EXIT && value <= HELP) {
               return value;
             }
@@ -115,10 +115,10 @@ public class UserInterface{
     public void addProducts() {
         Product result;
         do {
-          String name = getToken("Enter  name");
-          String qty = getToken("Enter qty");
-          String salePrice = getToken("Enter sale price");
-          String id = getToken("Enter product id");
+          String name = getToken("Enter product name");
+          String qty = getToken("Enter product quantity");
+          String salePrice = getToken("Enter product sale price");
+          String id = getToken("Enter product ID");
           result = warehouse.addProduct(name, qty, salePrice, id);
           if (result != null) {
             System.out.println(result);
@@ -129,7 +129,44 @@ public class UserInterface{
             break;
           }
         } while (true);
-      }
+    }
+
+    public void addWishlistItem()
+    {
+        Client clientPass = null;
+        Product productPass = null;
+
+        boolean check1 = false;
+        boolean check2 = false;
+        do {
+            String clientID = getToken("Enter client ID");
+            clientPass = warehouse.checkAgainstClientList(clientID); //Check against existing client IDs
+            if( clientPass == null ) { System.out.println("No client found with that ID. Enter again or, if you wish to exit, enter 0"); }
+                else check1 = true;
+        } while (!check1);
+        do {
+            String productID = getToken("Enter product ID");
+            productPass = warehouse.checkAgainstProductList(productID); //Check against existing product IDs
+            if( productPass == null ) { System.out.println("No product found with that ID. Enter again or, if you wish to exit, enter 0"); }
+                else check2 = true;
+        } while (!check2);
+
+        Client.addProductWishlist(productPass, clientPass);
+    }
+
+    public void getWishList()
+    {
+        Client clientPass = null;
+        boolean check0 = false;
+        do {
+            String clientID = getToken("Enter client ID");
+            clientPass = warehouse.checkAgainstClientList(clientID); //Check against existing client IDs
+            if( clientPass == null ) { System.out.println("No client found with that ID. Enter again or, if you wish to exit, enter 0"); }
+            else check0 = true;
+        } while (!check0);
+
+        Client.getWishlist(clientPass);
+    }
 
     public void showProducts() {
         Iterator allProducts = warehouse.getProducts();
@@ -179,7 +216,7 @@ public class UserInterface{
                                     break;
             case ADD_PRODUCTS:      addProducts();
                                     break;
-            case ADD_PRODUCT_TO_WISHLIST: /*Not defined yet*/
+            case ADD_PRODUCT_TO_WISHLIST: addWishlistItem();
                                     break;
             case DISPLAY_PRODUCTS:  showProducts();
                                     break;
