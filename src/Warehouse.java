@@ -3,7 +3,7 @@ import java.lang.*;
 import java.io.*;
 
 public class Warehouse implements Serializable {
-    private static final long serialVerionUID = 1L;
+    private static final long serialVersionUID = 1L;
     public static final int PRODUCT_NOT_FOUND = 1;
     public static final int PRODUCT_NOT_ADDED = 2;
     public static final int PRODUCT_ADDED = 3;

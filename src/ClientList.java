@@ -3,7 +3,7 @@ import java.lang.*;
 import java.io.*;
 
 public class ClientList implements Serializable {
-    private static final long serialVerionUID =1L;
+    private static final long serialVersionUID =1L;
     private static List clients = new LinkedList();
     private static ClientList clientList;
 
