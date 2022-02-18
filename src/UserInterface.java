@@ -86,23 +86,24 @@ public class UserInterface{
     }
     
     public void help() {
-        System.out.println("Enter a number between 0 and 12 as explained below:");
+        System.out.println("Enter a number between 0 and 9 as explained below:");
         System.out.println(EXIT + " to Exit\n");
         System.out.println(ADD_CLIENT + " to add a client");
-        System.out.println(ADD_PRODUCTS + " to  add products");
+        System.out.println(ADD_PRODUCTS + " to add products");
         System.out.println(ADD_PRODUCT_TO_WISHLIST + " to add products to client wishlist");
         System.out.println(DISPLAY_PRODUCTS + " to display products");
         System.out.println(DISPLAY_CLIENTS + " to display clients");
         System.out.println(DISPLAY_CLIENT_WISHLIST + " to display client wishlist");
-        System.out.println(SAVE + " to  save data");
-        System.out.println(RETRIEVE + " to  retrieve");
+        System.out.println(SAVE + " to save data");
+        System.out.println(RETRIEVE + " to retrieve");
         System.out.println(HELP + " for help");
       }
 
     public void addClient() {
         String name = getToken("Enter client name");
         String address = getToken("Enter address");
-        String id = getToken("Enter id");
+        String id = warehouse.clientIDGen();
+        System.out.println("A new ID was generated for the client");
         Client result;
         result = warehouse.addClient(name, address, id);
         if (result == null) {
@@ -178,30 +179,18 @@ public class UserInterface{
                                     break;
             case ADD_PRODUCTS:      addProducts();
                                     break;
-            case ADD_PRODUCT_TO_WISHLIST:       issueBooks();
+            case ADD_PRODUCT_TO_WISHLIST: /*Not defined yet*/
                                     break;
             case DISPLAY_PRODUCTS:  showProducts();
                                     break;
             case DISPLAY_CLIENTS:   showClients();
                                     break;
-            case DISPLAY_CLIENT_WISHLIST: renewBooks();
-                                    break;
-            case PLACE_HOLD:        placeHold();
-                                    break;
-            case REMOVE_HOLD:       removeHold();
-                                    break;
-            case PROCESS_HOLD:      processHolds();
-                                    break;
-            case GET_TRANSACTIONS:  getTransactions();
+            case DISPLAY_CLIENT_WISHLIST: /*Not defined yet*/
                                     break;
             case SAVE:              save();
                                     break;
             case RETRIEVE:          retrieve();
                                     break;
-            case SHOW_MEMBERS:	showMembers();
-                                    break; 		
-            case SHOW_BOOKS:	showBooks();
-                                    break; 		
             case HELP:              help();
                                     break;
           }

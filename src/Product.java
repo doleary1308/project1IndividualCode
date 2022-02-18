@@ -29,7 +29,7 @@ public class Product implements Serializable {
         return id;
     }
     public String toString(){
-        String string = id;
+        String string = "ID: " + id + " | Name: " + name + " | Sale Price: " + salePrice + " | Qty Avbl: " + qty;
         return string;
     }
     
