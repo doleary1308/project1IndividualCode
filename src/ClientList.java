@@ -23,7 +23,7 @@ public class ClientList implements Serializable {
     public static Iterator getClients(){
         return clients.iterator();
     }
-    public Client checkAgainstClientList(String id)
+    public static Client checkAgainstClientList(String id)
     {
         Client searchedClient = null;
         Client tempClient;

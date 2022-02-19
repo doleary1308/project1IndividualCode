@@ -132,6 +132,8 @@ public class UserInterface{
         } while (true);
     }
 
+    
+
     public void addWishlistItem()
     {
         Client clientPass = null;
@@ -156,7 +158,7 @@ public class UserInterface{
         System.out.println(productPass.getName() + " added to the wishlist of " + clientPass.getName() );
     }
 
-    public void getWishList()
+    /*public void getWishList()
     {
         Client clientPass = null;
         boolean check0 = false;
@@ -168,7 +170,7 @@ public class UserInterface{
         } while (!check0);
 
         Client.getWishlist(clientPass);
-    }
+    }*/
 
     public void showProducts() {
         Iterator allProducts = warehouse.getProducts();
@@ -183,6 +185,17 @@ public class UserInterface{
         while (allClients.hasNext()){
         Client client = (Client)(allClients.next());
             System.out.println(client.toString());
+        }
+    }
+
+    public void showClientWishlist(){
+        String id = getToken("Enter client id");
+        Client client = warehouse.checkAgainstClientList(id);
+        Iterator allProductsWishlist = Client.getWishlist(client);
+        while (allProductsWishlist.hasNext()){
+          Product product = (Product)(allProductsWishlist.next());
+          System.out.println(product.toString());
+
         }
     }
 
@@ -224,7 +237,7 @@ public class UserInterface{
                                     break;
             case DISPLAY_CLIENTS:   showClients();
                                     break;
-            case DISPLAY_CLIENT_WISHLIST: getWishList();
+            case DISPLAY_CLIENT_WISHLIST: showClientWishlist();
                                     break;
             case SAVE:              save();
                                     break;
