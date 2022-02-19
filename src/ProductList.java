@@ -31,7 +31,7 @@ public class ProductList implements Serializable {
     {
         Product searchedProduct = null;
         Product tempProduct;
-        for (int i=0; i<products.size(); i++) //Check against existing client IDs
+        for (int i=0; i<products.size(); i++) //Check against existing product IDs
         {
             tempProduct = (Product) products.get(i);
             if(id.equals(tempProduct.getId() ) ){searchedProduct = tempProduct;}
