@@ -40,8 +40,8 @@ public class Warehouse implements Serializable {
 
     public Client addClient(String name, String address, String id){
         Client client = new Client(name, address, id);
-        if(ClientList.insertClient(client)){
-            return(client);
+        if(clientList.insertClient(client)){
+        return(client);
         }
         return null;
     }
@@ -54,8 +54,8 @@ public class Warehouse implements Serializable {
     }
 
     public Iterator getClients(){
-        return ClientList.getClients();
-    }
+        return clientList.getClients();
+    } 
 
     public String newIDGen()
     {

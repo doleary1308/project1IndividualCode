@@ -139,61 +139,24 @@ public class UserInterface{
         Client clientPass = null;
         Product productPass = null;
 
-        String clientID = null;
-        String productID = null;
-
         boolean check1 = false;
         boolean check2 = false;
-        do { //Prompt the user for the client ID, ensuring the client exists
-            clientID = getToken("Enter client ID, or 0 to exit");
-            if(clientID.equals("0")){break;}
-            clientPass = warehouse.checkAgainstClientList(clientID); //Check against existing client IDs
-            if( clientPass == null && !clientID.equals("0") )
-            { System.out.println("No client found with that ID. Enter again or, if you wish to exit, enter 0"); }
-                else check1 = true;
-        } while (!check1);
-
-        if(!clientID.equals("0")) do { //Prompt the user for the product ID, ensuring the product exists
-            productID = getToken("Enter product ID, or 0 to exit");
-            if(productID.equals("0")){break;}
-            productPass = warehouse.checkAgainstProductList(productID); //Check against existing product IDs
-            if( productPass == null && !productID.equals("0") )
-            { System.out.println("No product found with that ID. Enter again or, if you wish to exit, enter 0"); }
-                else check2 = true;
-        } while (!check2);
-
-        if(!clientID.equals("0") && !productID.equals("0")) {
-            Boolean duplicateProduct = false;
-            for(int i = 0;i<clientPass.wishlist.size();i++) //Make sure the product being added isn't already on the wishlist
-            {
-                Product tempProduct = (Product) clientPass.wishlist.get(i);
-                if(tempProduct.getId()==productPass.getId())
-                { duplicateProduct = true; }
-            }
-
-            if(!duplicateProduct)
-            {
-                Client.addProductWishlist(productPass, clientPass);
-                System.out.println(productPass.getName() + " added to the wishlist of " + clientPass.getName());
-            }
-            else System.out.println(productPass.getName() + " already on " + clientPass.getName() + "'s wishlist");
-        }
-    }
-
-    /*public void getWishList()
-    {
-        Client clientPass = null;
-        boolean check0 = false;
         do {
             String clientID = getToken("Enter client ID");
             clientPass = warehouse.checkAgainstClientList(clientID); //Check against existing client IDs
-            if( clientPass == null )
-            { System.out.println("No client found with that ID. Enter again or, if you wish to exit, enter 0"); }
-            else check0 = true;
-        } while (!check0);
+            if( clientPass == null ) { System.out.println("No client found with that ID. Enter again or, if you wish to exit, enter 0"); }
+                else check1 = true;
+        } while (!check1);
+        do {
+            String productID = getToken("Enter product ID");
+            productPass = warehouse.checkAgainstProductList(productID); //Check against existing product IDs
+            if( productPass == null ) { System.out.println("No product found with that ID. Enter again or, if you wish to exit, enter 0"); }
+                else check2 = true;
+        } while (!check2);
+        Client.addProductWishlist(productPass, clientPass);
+        System.out.println(productPass.getName() + " added to the wishlist of " + clientPass.getName() );
+    }
 
-        Client.getWishlist(clientPass);
-    }*/
 
     public void showProducts() {
         Iterator allProducts = warehouse.getProducts();
@@ -214,14 +177,12 @@ public class UserInterface{
     public void showClientWishlist(){
         String id = getToken("Enter client id");
         Client client = warehouse.checkAgainstClientList(id);
-        if(client != null){
-            Iterator allProductsWishlist = Client.getWishlist(client);
-            while (allProductsWishlist.hasNext()){
-              Product product = (Product)(allProductsWishlist.next());
-              System.out.println(product.toString());
-            }
+        Iterator allProductsWishlist = Client.getWishlist(client);
+        while (allProductsWishlist.hasNext()){
+          Product product = (Product)(allProductsWishlist.next());
+          System.out.println(product.toString());
+
         }
-        else System.out.println("No client found with that ID" );
     }
 
     private void save() {
@@ -239,7 +200,7 @@ public class UserInterface{
             System.out.println(" The warehouse has been successfully retrieved from the file WarehouseData \n" );
             warehouse = tempWarehouse;
           } else {
-            System.out.println("File doesn't exist; creating new warehouse" );
+            System.out.println("File doesnt exist; creating new warehouse" );
             warehouse = Warehouse.instance();
           }
         } catch(Exception cnfe) {

@@ -4,7 +4,7 @@ import java.lang.*;
 
 public class Product implements Serializable {
     private String name;
-    private String qty;
+    public String qty;
     private String salePrice;
     private String id;
 

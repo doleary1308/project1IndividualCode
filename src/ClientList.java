@@ -4,7 +4,7 @@ import java.io.*;
 
 public class ClientList implements Serializable {
     private static final long serialVersionUID =1L;
-    private static List clients = new LinkedList();
+    private List clients = new LinkedList();
     private static ClientList clientList;
 
     public ClientList(){}
@@ -12,18 +12,20 @@ public class ClientList implements Serializable {
     public static ClientList instance() {
         if (clientList == null) {
           return (clientList = new ClientList());
-        } else {
+        }
+        else {
           return clientList;
         }
       }
-    public static boolean insertClient(Client client){
+
+    public boolean insertClient(Client client){
         clients.add(client);
         return true;
     }
-    public static Iterator getClients(){
+    public Iterator getClients(){
         return clients.iterator();
     }
-    public static Client checkAgainstClientList(String id)
+    public Client checkAgainstClientList(String id)
     {
         Client searchedClient = null;
         Client tempClient;
