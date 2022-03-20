@@ -6,16 +6,16 @@ public class UserInterface {
   private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
   private static Warehouse warehouse;
   private static final int EXIT = 0;
-  private static final int ADD_MEMBER = 1;
-  private static final int ADD_BOOKS = 2;
-  private static final int ISSUE_BOOKS = 3;
-  private static final int RETURN_BOOKS = 4;
-  private static final int RENEW_BOOKS = 5;
-  private static final int REMOVE_BOOKS = 6;
-  private static final int PLACE_HOLD = 7;
-  private static final int REMOVE_HOLD = 8;
-  private static final int PROCESS_HOLD = 9;
-  private static final int GET_TRANSACTIONS = 10;
+  private static final int ADD_CLIENT = 1;
+  private static final int ADD_PRODUCTS = 2;
+  private static final int VIEW_WISHLIST = 3;
+  private static final int ACCEPT_SHIPMENT = 4;
+  private static final int SHOW_CLIENT_WISHLIST = 5;
+  private static final int REMOVE_PRODUCTS = 6;
+  private static final int ADD_TO_WISHLIST = 7;
+  private static final int REMOVE_FROM_WISHLIST = 8;
+  private static final int CHECKOUT = 9;
+  private static final int GET_INVOICES = 10;
   private static final int SAVE = 11;
   private static final int RETRIEVE = 12;
   private static final int HELP = 13;
@@ -94,29 +94,34 @@ public class UserInterface {
   public void help() {
     System.out.println("Enter a number between 0 and 12 as explained below:");
     System.out.println(EXIT + " to Exit\n");
-    System.out.println(ADD_MEMBER + " to add a member");
-    System.out.println(ADD_BOOKS + " to  add books");
-    System.out.println(ISSUE_BOOKS + " to  issue books to a  member");
-    System.out.println(RETURN_BOOKS + " to  return books ");
-    System.out.println(RENEW_BOOKS + " to  renew books ");
-    System.out.println(REMOVE_BOOKS + " to  remove books");
-    System.out.println(PLACE_HOLD + " to  place a hold on a book");
-    System.out.println(REMOVE_HOLD + " to  remove a hold on a book");
-    System.out.println(PROCESS_HOLD + " to  process holds");
-    System.out.println(GET_TRANSACTIONS + " to  print transactions");
+    System.out.println(ADD_CLIENT + " to add a client");
+    System.out.println(ADD_PRODUCTS + " to  add products" +
+            "");
+    System.out.println(VIEW_WISHLIST + " to  list products" +
+            " in a  client's wishlist");
+    System.out.println(ACCEPT_SHIPMENT + " to  accept shipment" +   //likely not accept shipment
+            " ");
+    System.out.println(SHOW_CLIENT_WISHLIST + " to  show client wishlists" +
+            " ");
+    System.out.println(REMOVE_PRODUCTS + " to  remove products" +
+            "");
+    System.out.println(ADD_TO_WISHLIST + " to  add to wishlist");
+    System.out.println(REMOVE_FROM_WISHLIST + " to  remove from wishlist");
+    System.out.println(CHECKOUT + " to  checkout");
+    System.out.println(GET_INVOICES + " to  print transactions");
     System.out.println(SAVE + " to  save data");
     System.out.println(RETRIEVE + " to  retrieve");
     System.out.println(HELP + " for help");
   }
 
   public void addClient() {
-    String name = getToken("Enter member name");
+    String name = getToken("Enter client name");
     String address = getToken("Enter address");
     String phone = getToken("Enter phone");
     Client result;
     result = warehouse.addClient(name, address, phone);
     if (result == null) {
-      System.out.println("Could not add member");
+      System.out.println("Could not add client");
     }
     System.out.println(result);
   }
@@ -124,45 +129,47 @@ public class UserInterface {
   public void addProducts() {
     Product result;
     do {
-      String title = getToken("Enter  title");
-      String bookID = getToken("Enter id");
-      String author = getToken("Enter author");
-      result = warehouse.addProduct(title, author, bookID);
+      String productName = getToken("Enter  productName");
+      String productID = getToken("Enter id");
+      String quantity = getToken("Enter quantity");
+      result = warehouse.addProduct(productName, quantity, productID);
       if (result != null) {
         System.out.println(result);
       } else {
-        System.out.println("Book could not be added");
+        System.out.println("product could not be added");
       }
-      if (!yesOrNo("Add more books?")) {
+      if (!yesOrNo("Add more products" +
+              "?")) {
         break;
       }
     } while (true);
   }
   public void listProducts() {            //was issueBooks
     Product result;
-    String memberID = getToken("Enter member id");
-    if (warehouse.searchMembership(memberID) == null) {
-      System.out.println("No such member");
+    String clientID = getToken("Enter client id");
+    if (warehouse.searchMembership(clientID) == null) {
+      System.out.println("No such client");
       return;
     }
     do {
-      String bookID = getToken("Enter book id");
-      result = warehouse.issueBook(memberID, bookID);
+      String productID = getToken("Enter product id");
+      result = warehouse.issueBook(clientID, productID);
       if (result != null){
         System.out.println(result.getTitle()+ "   " +  result.getDueDate());
       } else {
-          System.out.println("Book could not be issued");
+          System.out.println("product could not be issued");
       }
-      if (!yesOrNo("Issue more books?")) {
+      if (!yesOrNo("Issue more products" +
+              "?")) {
         break;
       }
     } while (true);
   }
   public void showClientWishList() {    //was renewBooks
     Product result;
-    String memberID = getToken("Enter member id");
+    String memberID = getToken("Enter client id");
     if (warehouse.searchMembership(memberID) == null) {
-      System.out.println("No such member");
+      System.out.println("No such client");
       return;
     }
     Iterator issuedBooks = warehouse.getProducts(memberID);
@@ -173,36 +180,38 @@ public class UserInterface {
         if (result != null){
           System.out.println(result.getTitle()+ "   " + result.getDueDate());
         } else {
-          System.out.println("Book is not renewable");
+          System.out.println("product is not renewable");
         }
       }
     }
   }
-  public void acceptShipment() {         //from return books to accept shipment
+  public void acceptShipment() {         //from return products
+    // to accept shipment
     int result;
     do {
-      String bookID = getToken("Enter book id");
+      String bookID = getToken("Enter product id");
       result = warehouse.returnBook(bookID);
       switch(result) {
         case Warehouse.PRODUCT_NOT_FOUND:
-          System.out.println("No such Book in Library");
+          System.out.println("No such product in Library");
           break;
         case Warehouse.PRODUCT_NOT_ISSUED:
-          System.out.println(" Book  was not checked out");
+          System.out.println(" product  was not checked out");
           break;
-        case Warehouse.PRODUCT_HAS_HOLD:
-          System.out.println("Book has a hold");
+        case Warehouse.PRODUCT_HAS_WISHLIST:
+          System.out.println("product has a hold");
           break;
         case Warehouse.OPERATION_FAILED:
-          System.out.println("Book could not be returned");
+          System.out.println("product could not be returned");
           break;
         case Warehouse.OPERATION_COMPLETED:
-          System.out.println(" Book has been returned");
+          System.out.println(" product has been returned");
           break;
         default:
           System.out.println("An error has occurred");
       }
-      if (!yesOrNo("Return more books?")) {
+      if (!yesOrNo("Return more products" +
+              "?")) {
         break;
       }
     } while (true);
@@ -210,46 +219,47 @@ public class UserInterface {
   public void removeProducts() {       //was removeBooks
     int result;
     do {
-      String bookID = getToken("Enter book id");
+      String bookID = getToken("Enter product id");
       result = warehouse.removeProduct(bookID);
       switch(result){
         case Warehouse.PRODUCT_NOT_FOUND:
-          System.out.println("No such Book in Library");
+          System.out.println("No such product in Library");
           break;
         case Warehouse.PRODUCT_ISSUED:
-          System.out.println(" Book is currently checked out");
+          System.out.println(" product is currently checked out");
           break;
-        case Warehouse.PRODUCT_HAS_HOLD:
-          System.out.println("Book has a hold");
+        case Warehouse.PRODUCT_HAS_WISHLIST:
+          System.out.println("product has a hold");
           break;
         case Warehouse.OPERATION_FAILED:
-          System.out.println("Book could not be removed");
+          System.out.println("product could not be removed");
           break;
         case Warehouse.OPERATION_COMPLETED:
-          System.out.println(" Book has been removed");
+          System.out.println(" product has been removed");
           break;
         default:
           System.out.println("An error has occurred");
       }
-      if (!yesOrNo("Remove more books?")) {
+      if (!yesOrNo("Remove more products" +
+              "?")) {
         break;
       }
     } while (true);
   }
   public void addWishList() {           //was place hold
-    String memberID = getToken("Enter member id");
-    String bookID = getToken("Enter book id");
+    String memberID = getToken("Enter client id");
+    String bookID = getToken("Enter product id");
     int duration = getNumber("Enter duration of hold");   //might be quantity
     int result = warehouse.addToWishList(memberID, bookID, duration);
     switch(result){
       case Warehouse.PRODUCT_NOT_FOUND:
-        System.out.println("No such Book in Library");
+        System.out.println("No such product in Library");
         break;
       case Warehouse.PRODUCT_NOT_ISSUED:
-        System.out.println(" Book is not checked out");
+        System.out.println(" product is not checked out");
         break;
       case Warehouse.NO_SUCH_CLIENT:
-        System.out.println("Not a valid member ID");
+        System.out.println("Not a valid client ID");
         break;
       case Warehouse.HOLD_PLACED:
         System.out.println("A hold has been placed");
@@ -259,15 +269,15 @@ public class UserInterface {
     }
   }
   public void removeFromWishList() {      //was remove hold
-    String memberID = getToken("Enter member id");
-    String bookID = getToken("Enter book id");
+    String memberID = getToken("Enter client id");
+    String bookID = getToken("Enter product id");
     int result = warehouse.removeHold(memberID, bookID);
     switch(result){
       case Warehouse.PRODUCT_NOT_FOUND:
-        System.out.println("No such Book in Library");
+        System.out.println("No such product in Library");
         break;
       case Warehouse.NO_SUCH_CLIENT:
-        System.out.println("Not a valid member ID");
+        System.out.println("Not a valid client ID");
         break;
       case Warehouse.OPERATION_COMPLETED:
         System.out.println("The hold has been removed");
@@ -279,25 +289,26 @@ public class UserInterface {
   public void checkout() {  //was processHolds
     Client result;
     do {
-      String bookID = getToken("Enter book id");
+      String bookID = getToken("Enter product id");
       result = warehouse.processHold(bookID);
       if (result != null) {
         System.out.println(result);
       } else {
         System.out.println("No valid holds left");
       }
-      if (!yesOrNo("Process more books?")) {
+      if (!yesOrNo("Process more products" +
+              "?")) {
         break;
       }
     } while (true);
   }
   public void getInvoices() {     //was transactions
     Iterator result;
-    String memberID = getToken("Enter member id");
+    String memberID = getToken("Enter client id");
     Calendar date  = getDate("Please enter the date for which you want records as mm/dd/yy");
     result = warehouse.getTransactions(memberID,date);
     if (result == null) {
-      System.out.println("Invalid Member ID");
+      System.out.println("Invalid client ID");
     } else {
       while(result.hasNext()) {
         Invoice invoice = (Invoice) result.next();
@@ -332,25 +343,25 @@ public class UserInterface {
     help();
     while ((command = getCommand()) != EXIT) {
       switch (command) {
-        case ADD_MEMBER:        addClient();
+        case ADD_CLIENT:        addClient();
                                 break;
-        case ADD_BOOKS:         addProducts();
+        case ADD_PRODUCTS:         addProducts();
                                 break;
-        case ISSUE_BOOKS:       listProducts();
+        case VIEW_WISHLIST:       listProducts();
                                 break;
-        case RETURN_BOOKS:      acceptShipment();
+        case ACCEPT_SHIPMENT:      acceptShipment();
                                 break;
-        case REMOVE_BOOKS:      removeProducts();
+        case REMOVE_PRODUCTS:      removeProducts();
                                 break;
-        case RENEW_BOOKS:       showClientWishList();
+        case SHOW_CLIENT_WISHLIST:       showClientWishList();
                                 break;
-        case PLACE_HOLD:        addWishList();
+        case ADD_TO_WISHLIST:        addWishList();
                                 break;
-        case REMOVE_HOLD:       removeFromWishList();
+        case REMOVE_FROM_WISHLIST:       removeFromWishList();
                                 break;
-        case PROCESS_HOLD:      checkout();
+        case CHECKOUT:      checkout();
                                 break;
-        case GET_TRANSACTIONS:  getInvoices();
+        case GET_INVOICES:  getInvoices();
                                 break;
         case SAVE:              save();
                                 break;

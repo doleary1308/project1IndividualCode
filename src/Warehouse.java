@@ -4,7 +4,7 @@ public class Warehouse implements Serializable {
   private static final long serialVersionUID = 1L;
   public static final int PRODUCT_NOT_FOUND = 1;
   public static final int PRODUCT_NOT_ISSUED = 2;
-  public static final int PRODUCT_HAS_HOLD = 3;
+  public static final int PRODUCT_HAS_WISHLIST = 3;
   public static final int PRODUCT_ISSUED = 4;     //WAS BOOK ISSUED
   public static final int HOLD_PLACED  = 5;
   public static final int NO_HOLD_FOUND  = 6;
@@ -140,7 +140,7 @@ public class Warehouse implements Serializable {
       return(PRODUCT_NOT_FOUND);
     }
     if (product.hasHold()) {
-      return(PRODUCT_HAS_HOLD);
+      return(PRODUCT_HAS_WISHLIST);
     }
     if ( product.getBorrower() != null) {
       return(PRODUCT_ISSUED);
@@ -163,7 +163,7 @@ public class Warehouse implements Serializable {
       return(OPERATION_FAILED);
     }
     if (product.hasHold()) {
-      return(PRODUCT_HAS_HOLD);
+      return(PRODUCT_HAS_WISHLIST);
     }
     return(OPERATION_COMPLETED);
   }
