@@ -1,42 +1,70 @@
+import java.util.*;
 import java.lang.*;
 import java.io.*;
-import java.util.*;
-
 public class ProductList implements Serializable {
-    private static final long serialVersionUID = 1L;
-    private List products = new LinkedList();
-    private static ProductList productList;
-
-    public ProductList(){}
-
-    public static ProductList instance(){
-        if(productList == null){
-            return(productList= new ProductList());
+  private static final long serialVersionUID = 1L;
+  private List books = new LinkedList();
+  private static ProductList productList;
+  private ProductList() {
+  }
+  public static ProductList instance() {
+    if (productList == null) {
+      return (productList = new ProductList());
+    } else {
+      return productList;
+    }
+  }
+  public Product search(String bookId) {
+    for (Iterator iterator = books.iterator(); iterator.hasNext(); ) {
+      Product product = (Product) iterator.next();
+      if (product.getId().equals(bookId)) {
+        return product;
+      }
+    }
+    return null;
+  }
+  public boolean removeBook(String bookId) {
+    Product product = search(bookId);
+    if (product == null) {
+      return false;
+    } else {
+      return books.remove(product);
+    }
+  }
+  public boolean insertBook(Product product) {
+    books.add(product);
+    return true;
+  }
+  public Iterator getBooks() {
+    return books.iterator();
+  }
+  private void writeObject(java.io.ObjectOutputStream output) {
+    try {
+      output.defaultWriteObject();
+      output.writeObject(productList);
+    } catch(IOException ioe) {
+      System.out.println(ioe);
+    }
+  }
+  private void readObject(java.io.ObjectInputStream input) {
+    try {
+      if (productList != null) {
+        return;
+      } else {
+        input.defaultReadObject();
+        if (productList == null) {
+          productList = (ProductList) input.readObject();
+        } else {
+          input.readObject();
         }
-        else{
-            return productList;
-        }
+      }
+    } catch(IOException ioe) {
+      System.out.println("in Catalog readObject \n" + ioe);
+    } catch(ClassNotFoundException cnfe) {
+      cnfe.printStackTrace();
     }
-
-    public boolean insertProduct(Product product){
-        products.add(product);
-        return true;
-    }
-
-    public Iterator getProducts(){
-        return products.iterator();
-    }
-
-    public Product checkAgainstProductList(String id)
-    {
-        Product searchedProduct = null;
-        Product tempProduct;
-        for (int i=0; i<products.size(); i++) //Check against existing product IDs
-        {
-            tempProduct = (Product) products.get(i);
-            if(id.equals(tempProduct.getId() ) ){searchedProduct = tempProduct;}
-        }
-        return searchedProduct;
-    }
-
+  }
+  public String toString() {
+    return books.toString();
+  }
 }

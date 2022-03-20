@@ -1,42 +1,58 @@
 import java.util.*;
-import java.lang.*;
 import java.io.*;
-
 public class ClientList implements Serializable {
-    private static final long serialVersionUID =1L;
-    private List clients = new LinkedList();
-    private static ClientList clientList;
-
-    public ClientList(){}
-
-    public static ClientList instance() {
+  private static final long serialVersionUID = 1L;
+  private List members = new LinkedList();
+  private static ClientList clientList;
+  private ClientList() {
+  }
+  public static ClientList instance() {
+    if (clientList == null) {
+      return (clientList = new ClientList());
+    } else {
+      return clientList;
+    }
+  }
+  public Client search(String memberId) {
+    for (Iterator iterator = members.iterator(); iterator.hasNext(); ) {
+      Client client = (Client) iterator.next();
+      if (client.getId().equals(memberId)) {
+        return client;
+      }
+    }
+    return null;
+  }
+  public boolean insertMember(Client client) {
+    members.add(client);
+    return true;
+  }
+  private void writeObject(java.io.ObjectOutputStream output) {
+    try {
+      output.defaultWriteObject();
+      output.writeObject(clientList);
+    } catch(IOException ioe) {
+      ioe.printStackTrace();
+    }
+  }
+  private void readObject(java.io.ObjectInputStream input) {
+    try {
+      if (clientList != null) {
+        return;
+      } else {
+        input.defaultReadObject();
         if (clientList == null) {
-          return (clientList = new ClientList());
-        }
-        else {
-          return clientList;
+          clientList = (ClientList) input.readObject();
+        } else {
+          input.readObject();
         }
       }
-
-    public boolean insertClient(Client client){
-        clients.add(client);
-        return true;
+    } catch(IOException ioe) {
+      ioe.printStackTrace();
+    } catch(ClassNotFoundException cnfe) {
+      cnfe.printStackTrace();
     }
-    public Iterator getClients(){
-        return clients.iterator();
-    }
-    public Client checkAgainstClientList(String id)
-    {
-        Client searchedClient = null;
-        Client tempClient;
-        for (int i=0; i<clients.size(); i++) //Check against existing client IDs
-        {
-            tempClient = (Client) clients.get(i);
-            if(id.equals(tempClient.getId() ) ){searchedClient = tempClient;}
-        }
-        return searchedClient;
-    }
-
-
-    
+  }
+  public String toString() {
+    return members.toString();
+  }
 }
