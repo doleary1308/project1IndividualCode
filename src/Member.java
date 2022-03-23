@@ -1,6 +1,6 @@
 import java.util.*;
 import java.io.*;
-public class Client implements Serializable {
+public class Member implements Serializable {
   private static final long serialVersionUID = 1L;
   private String name;
   private String address;
@@ -10,33 +10,33 @@ public class Client implements Serializable {
   private List booksBorrowed = new LinkedList();
   private List booksOnHold = new LinkedList();
   private List transactions = new LinkedList();
-  public Client(String name, String address, String phone) {
+  public  Member (String name, String address, String phone) {
     this.name = name;
     this.address = address;
     this.phone = phone;
-    id = MEMBER_STRING + (ClientIdServer.instance()).getId();
+    id = MEMBER_STRING + (MemberIdServer.instance()).getId();
   }
-  public boolean issue(Product product) {
-    if (booksBorrowed.add(product)) {
-      transactions.add(new Invoice("Book issued ", product.getTitle()));
+  public boolean issue(Book book) {
+    if (booksBorrowed.add(book)) {
+      transactions.add(new Transaction ("Book issued ", book.getTitle()));
       return true;
     }
     return false;
   }
-  public boolean returnBook(Product product) {
-    if ( booksBorrowed.remove(product)){
-      transactions.add(new Invoice("Book returned ", product.getTitle()));
+  public boolean returnBook(Book book) {
+    if ( booksBorrowed.remove(book)){
+      transactions.add(new Transaction ("Book returned ", book.getTitle()));
       return true;
     }
     return false;
   }
 
-  public boolean renew(Product product) {
+  public boolean renew(Book book) {
     for (ListIterator iterator = booksBorrowed.listIterator(); iterator.hasNext(); ) {
-      Product aProduct = (Product) iterator.next();
-      String id = aProduct.getId();
-      if (id.equals(product.getId())) {
-        transactions.add(new Invoice("Book renewed ",  product.getTitle()));
+      Book aBook = (Book) iterator.next();
+      String id = aBook.getId();
+      if (id.equals(book.getId())) {
+        transactions.add(new Transaction ("Book renewed ",  book.getTitle()));
         return true;
       }
     }
@@ -45,16 +45,16 @@ public class Client implements Serializable {
   public Iterator getBooksIssued() {
     return (booksBorrowed.listIterator());
   }
-  public void placeHold(WaitList waitList) {
-    transactions.add(new Invoice("Hold Placed ", waitList.getProduct().getTitle()));
-    booksOnHold.add(waitList);
+  public void placeHold(Hold hold) {
+    transactions.add(new Transaction ("Hold Placed ", hold.getBook().getTitle()));
+    booksOnHold.add(hold);
   }
   public boolean removeHold(String bookId) {
     for (ListIterator iterator = booksOnHold.listIterator(); iterator.hasNext(); ) {
-      WaitList waitList = (WaitList) iterator.next();
-      String id = waitList.getProduct().getId();
+      Hold hold = (Hold) iterator.next();
+      String id = hold.getBook().getId();
       if (id.equals(bookId)) {
-        transactions.add(new Invoice("Hold Removed ", waitList.getProduct().getTitle()));
+        transactions.add(new Transaction ("Hold Removed ", hold.getBook().getTitle()));
         iterator.remove();
         return true;
       }
@@ -64,9 +64,9 @@ public class Client implements Serializable {
   public Iterator getTransactions(Calendar date) {
     List result = new LinkedList();
     for (Iterator iterator = transactions.iterator(); iterator.hasNext(); ) {
-      Invoice invoice = (Invoice) iterator.next();
-      if (invoice.onDate(date)) {
-        result.add(invoice);
+      Transaction transaction = (Transaction) iterator.next();
+      if (transaction.onDate(date)) {
+        result.add(transaction);
       }
     }
     return (result.iterator());
@@ -99,17 +99,17 @@ public class Client implements Serializable {
     String string = "Member name " + name + " address " + address + " id " + id + "phone " + phone;
     string += " borrowed: [";
     for (Iterator iterator = booksBorrowed.iterator(); iterator.hasNext(); ) {
-      Product product = (Product) iterator.next();
-      string += " " + product.getTitle();
+      Book book = (Book) iterator.next();
+      string += " " + book.getTitle();
     }
     string += "] holds: [";
     for (Iterator iterator = booksOnHold.iterator(); iterator.hasNext(); ) {
-      WaitList waitList = (WaitList) iterator.next();
-      string += " " + waitList.getProduct().getTitle();
+      Hold hold = (Hold) iterator.next();
+      string += " " + hold.getBook().getTitle();
     }
     string += "] transactions: [";
     for (Iterator iterator = transactions.iterator(); iterator.hasNext(); ) {
-      string += (Invoice) iterator.next();
+      string += (Transaction) iterator.next();
     }
     string += "]";
     return string;

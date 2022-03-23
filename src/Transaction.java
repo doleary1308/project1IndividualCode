@@ -1,11 +1,11 @@
 import java.util.*;
 import java.io.*;
-public class Invoice implements Serializable {
+public class Transaction implements Serializable {
   private static final long serialVersionUID = 1L;
   private String type;
   private String title;
   private Calendar date;
-  public Invoice(String type, String title) {
+  public Transaction (String type, String title) {
     this.type = type;
     this.title = title;
     date = new GregorianCalendar();

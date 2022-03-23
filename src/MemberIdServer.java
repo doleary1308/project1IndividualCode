@@ -1,13 +1,13 @@
 import java.io.*;
-public class ClientIdServer implements Serializable {
+public class MemberIdServer implements Serializable {
   private  int idCounter;
-  private static ClientIdServer server;
-  private ClientIdServer() {
+  private static MemberIdServer server;
+  private MemberIdServer() {
     idCounter = 1;
   }
-  public static ClientIdServer instance() {
+  public static MemberIdServer instance() {
     if (server == null) {
-      return (server = new ClientIdServer());
+      return (server = new MemberIdServer());
     } else {
       return server;
     }
@@ -20,7 +20,7 @@ public class ClientIdServer implements Serializable {
   }
   public static void retrieve(ObjectInputStream input) {
     try {
-      server = (ClientIdServer) input.readObject();
+      server = (MemberIdServer) input.readObject();
     } catch(IOException ioe) {
       ioe.printStackTrace();
     } catch(Exception cnfe) {
@@ -39,7 +39,7 @@ public class ClientIdServer implements Serializable {
     try {
       input.defaultReadObject();
       if (server == null) {
-        server = (ClientIdServer) input.readObject();
+        server = (MemberIdServer) input.readObject();
       } else {
         input.readObject();
       }

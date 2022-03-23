@@ -1,47 +1,47 @@
 import java.util.*;
 import java.io.*;
-public class ClientList implements Serializable {
+public class MemberList implements Serializable {
   private static final long serialVersionUID = 1L;
   private List members = new LinkedList();
-  private static ClientList clientList;
-  private ClientList() {
+  private static MemberList memberList;
+  private MemberList() {
   }
-  public static ClientList instance() {
-    if (clientList == null) {
-      return (clientList = new ClientList());
+  public static MemberList instance() {
+    if (memberList == null) {
+      return (memberList = new MemberList());
     } else {
-      return clientList;
+      return memberList;
     }
   }
-  public Client search(String memberId) {
+  public Member search(String memberId) {
     for (Iterator iterator = members.iterator(); iterator.hasNext(); ) {
-      Client client = (Client) iterator.next();
-      if (client.getId().equals(memberId)) {
-        return client;
+      Member member = (Member) iterator.next();
+      if (member.getId().equals(memberId)) {
+        return member;
       }
     }
     return null;
   }
-  public boolean insertMember(Client client) {
-    members.add(client);
+  public boolean insertMember(Member member) {
+    members.add(member);
     return true;
   }
   private void writeObject(java.io.ObjectOutputStream output) {
     try {
       output.defaultWriteObject();
-      output.writeObject(clientList);
+      output.writeObject(memberList);
     } catch(IOException ioe) {
       ioe.printStackTrace();
     }
   }
   private void readObject(java.io.ObjectInputStream input) {
     try {
-      if (clientList != null) {
+      if (memberList != null) {
         return;
       } else {
         input.defaultReadObject();
-        if (clientList == null) {
-          clientList = (ClientList) input.readObject();
+        if (memberList == null) {
+          memberList = (MemberList) input.readObject();
         } else {
           input.readObject();
         }

@@ -1,38 +1,38 @@
 import java.util.*;
 import java.lang.*;
 import java.io.*;
-public class ProductList implements Serializable {
+public class Catalog implements Serializable {
   private static final long serialVersionUID = 1L;
   private List books = new LinkedList();
-  private static ProductList productList;
-  private ProductList() {
+  private static Catalog catalog;
+  private Catalog() {
   }
-  public static ProductList instance() {
-    if (productList == null) {
-      return (productList = new ProductList());
+  public static Catalog instance() {
+    if (catalog == null) {
+      return (catalog = new Catalog());
     } else {
-      return productList;
+      return catalog;
     }
   }
-  public Product search(String bookId) {
+  public Book search(String bookId) {
     for (Iterator iterator = books.iterator(); iterator.hasNext(); ) {
-      Product product = (Product) iterator.next();
-      if (product.getId().equals(bookId)) {
-        return product;
+      Book book = (Book) iterator.next();
+      if (book.getId().equals(bookId)) {
+        return book;
       }
     }
     return null;
   }
   public boolean removeBook(String bookId) {
-    Product product = search(bookId);
-    if (product == null) {
+    Book book = search(bookId);
+    if (book == null) {
       return false;
     } else {
-      return books.remove(product);
+      return books.remove(book);
     }
   }
-  public boolean insertBook(Product product) {
-    books.add(product);
+  public boolean insertBook(Book book) {
+    books.add(book);
     return true;
   }
   public Iterator getBooks() {
@@ -41,19 +41,19 @@ public class ProductList implements Serializable {
   private void writeObject(java.io.ObjectOutputStream output) {
     try {
       output.defaultWriteObject();
-      output.writeObject(productList);
+      output.writeObject(catalog);
     } catch(IOException ioe) {
       System.out.println(ioe);
     }
   }
   private void readObject(java.io.ObjectInputStream input) {
     try {
-      if (productList != null) {
+      if (catalog != null) {
         return;
       } else {
         input.defaultReadObject();
-        if (productList == null) {
-          productList = (ProductList) input.readObject();
+        if (catalog == null) {
+          catalog = (Catalog) input.readObject();
         } else {
           input.readObject();
         }
