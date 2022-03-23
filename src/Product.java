@@ -1,53 +1,53 @@
 import java.util.*;
 import java.lang.*;
 import java.io.*;
-public class Book implements Serializable {
+public class Product implements Serializable {
   private static final long serialVersionUID = 1L;
-  private String title;
+  private String name;
   private String author;
   private String id;
-  private Member borrowedBy;
+  private Client borrowedBy;
   private List holds = new LinkedList();
   private Calendar dueDate;
 
-  public Book(String title, String author, String id) {
-    this.title = title;
+  public Product(String name, String author, String id) {
+    this.name = name;
     this.author = author;
     this.id = id;
   }
-  public boolean issue(Member member) {
-    borrowedBy = member;
+  public boolean issue(Client client) {
+    borrowedBy = client;
     dueDate = new GregorianCalendar();
     dueDate.setTimeInMillis(System.currentTimeMillis());
     dueDate.add(Calendar.MONTH, 1);
     return true;
   }
-  public Member returnBook() {
+  public Client returnProduct() {
     if (borrowedBy == null) {
       return null;
     } else {
-      Member borrower = borrowedBy;
+      Client borrower = borrowedBy;
       borrowedBy = null;
       return borrower;
     }
   }
-  public boolean renew(Member member) {
+  public boolean renew(Client client) {
     if (hasHold()) {
       return false;
     }
-    if ((member.getId()).equals(borrowedBy.getId())) {
-      return (issue(member));
+    if ((client.getId()).equals(borrowedBy.getId())) {
+      return (issue(client));
     }
     return false;
   }
   public void placeHold(Hold hold) {
     holds.add(hold);
   }
-  public boolean removeHold(String memberId) {
+  public boolean removeHold(String clientId) {
     for (ListIterator iterator = holds.listIterator(); iterator.hasNext(); ) {
       Hold hold = (Hold) iterator.next();
-      String id = hold.getMember().getId();
-      if (id.equals(memberId)) {
+      String id = hold.getClient().getId();
+      if (id.equals(clientId)) {
         iterator.remove();
         return true;
       }
@@ -77,19 +77,19 @@ public class Book implements Serializable {
   public String getAuthor() {
     return author;
   }
-  public String getTitle() {
-    return title;
+  public String getName() {
+    return name;
   }
   public String getId() {
     return id;
   }
-  public Member getBorrower() {
+  public Client getBorrower() {
     return borrowedBy;
   }
   public String getDueDate() {
       return (dueDate.getTime().toString());
   }
   public String toString() {
-    return "title " + title + " author " + author + " id " + id + " borrowed by " + borrowedBy;
+    return "name " + name + " author " + author + " id " + id + " borrowed by " + borrowedBy;
   }
 }
