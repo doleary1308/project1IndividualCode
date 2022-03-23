@@ -6,22 +6,22 @@ public class UserInterface {
   private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
   private static Library library;
   private static final int EXIT = 0;
-  private static final int ADD_MEMBER = 1;
-  private static final int ADD_BOOKS = 2;
-  private static final int ISSUE_BOOKS = 3;
-  private static final int RETURN_BOOKS = 4;    //accept shipment
-  private static final int RENEW_BOOKS = 5;
-  private static final int REMOVE_BOOKS = 6;
-  private static final int PLACE_HOLD = 7;
-  private static final int REMOVE_HOLD = 8;
-  private static final int PROCESS_HOLD = 9;
-  private static final int GET_TRANSACTIONS = 10;
-  private static final int SHOW_BOOKS = 11;
-  private static final int SAVE = 12;
-  private static final int RETRIEVE = 13;
-  private static final int HELP = 14;
+  private static final int ADD_MEMBER = 1;        //Add Client
+  private static final int ADD_BOOKS = 2;         //Add Product
+  private static final int ISSUE_BOOKS = 3;       //Checkout?
+  private static final int RETURN_BOOKS = 4;      //Accept Shipment
+  private static final int RENEW_BOOKS = 5;       //??
+  private static final int REMOVE_BOOKS = 6;      //Remove Product
+  private static final int PLACE_HOLD = 7;        //??
+  private static final int REMOVE_HOLD = 8;       //??
+  private static final int PROCESS_HOLD = 9;      //??
+  private static final int GET_TRANSACTIONS = 10; //Get Invoices
+  private static final int SHOW_BOOKS = 11;       //Show Products
+  private static final int SAVE = 12;             //Save
+  private static final int RETRIEVE = 13;         //Retrieve
+  private static final int HELP = 14;             //Help :(
   private UserInterface() {
-    if (yesOrNo("Look for saved data and  use it?")) {
+    if (yesOrNo("Look for saved data and use it?")) {
       retrieve();
     } else {
       library = Library.instance();
@@ -93,20 +93,20 @@ public class UserInterface {
   }
 
   public void help() {
-    System.out.println("Enter a number between 0 and 12 as explained below:");
+    System.out.println("Enter a number as explained below:");
     System.out.println(EXIT + " to Exit\n");
     System.out.println(ADD_MEMBER + " to add a member");
-    System.out.println(ADD_BOOKS + " to  add books");
-    System.out.println(ISSUE_BOOKS + " to  issue books to a  member");
-    System.out.println(RETURN_BOOKS + " to  return books ");
-    System.out.println(RENEW_BOOKS + " to  renew books ");
-    System.out.println(REMOVE_BOOKS + " to  remove books");
-    System.out.println(PLACE_HOLD + " to  place a hold on a book");
-    System.out.println(REMOVE_HOLD + " to  remove a hold on a book");
-    System.out.println(PROCESS_HOLD + " to  process holds");
-    System.out.println(GET_TRANSACTIONS + " to  print transactions");
-    System.out.println(SAVE + " to  save data");
-    System.out.println(RETRIEVE + " to  retrieve");
+    System.out.println(ADD_BOOKS + " to add books");
+    System.out.println(ISSUE_BOOKS + " to issue books to a member");
+    System.out.println(RETURN_BOOKS + " to return books ");
+    System.out.println(RENEW_BOOKS + " to renew books ");
+    System.out.println(REMOVE_BOOKS + " to remove books");
+    System.out.println(PLACE_HOLD + " to place a hold on a book");
+    System.out.println(REMOVE_HOLD + " to remove a hold on a book");
+    System.out.println(PROCESS_HOLD + " to process holds");
+    System.out.println(GET_TRANSACTIONS + " to print transactions");
+    System.out.println(SAVE + " to save data");
+    System.out.println(RETRIEVE + " to retrieve");
     System.out.println(HELP + " for help");
   }
 
@@ -125,7 +125,7 @@ public class UserInterface {
   public void addBooks() {
     Book result;
     do {
-      String title = getToken("Enter  title");
+      String title = getToken("Enter title");
       String bookID = getToken("Enter id");
       String author = getToken("Enter author");
       result = library.addBook(title, author, bookID);
@@ -189,7 +189,7 @@ public class UserInterface {
           System.out.println("No such Book in Library");
           break;
         case Library.BOOK_NOT_ISSUED:
-          System.out.println(" Book  was not checked out");
+          System.out.println(" Book was not checked out");
           break;
         case Library.BOOK_HAS_HOLD:
           System.out.println("Book has a hold");
@@ -304,11 +304,12 @@ public class UserInterface {
         Transaction transaction = (Transaction) result.next();
         System.out.println(transaction.getType() + "   "   + transaction.getTitle() + "\n");
       }
-      System.out.println("\n  There are no more transactions \n" );
+      System.out.println("\n There are no more transactions \n" );
     }
   }
   public void showBooks() {
-    Iterator allBooks = library.getBooks();
+    String memberID = getToken("Enter member id");  //////
+    Iterator allBooks = library.getBooks(memberID);
     while (allBooks.hasNext()){
       Book book = (Book)(allBooks.next());
       System.out.println(book.toString());
@@ -328,7 +329,7 @@ public class UserInterface {
         System.out.println(" The library has been successfully retrieved from the file LibraryData \n" );
         library = tempLibrary;
       } else {
-        System.out.println("File doesnt exist; creating new library" );
+        System.out.println("File doesn't exist; creating new library" );
         library = Library.instance();
       }
     } catch(Exception cnfe) {
