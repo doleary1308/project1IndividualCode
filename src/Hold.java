@@ -1,21 +1,21 @@
 import java.util.*;
 import java.io.*;
 public class Hold implements Serializable {
-  private Book book;
-  private Member member;
+  private Product product;
+  private Client client;
   private Calendar date;
-  public Hold(Member member, Book book, int duration) {
-    this.book = book;
-    this.member = member;
+  public Hold(Client client, Product product, int duration) {
+    this.product = product;
+    this.client = client;
     date = new GregorianCalendar();
     date.setTimeInMillis(System.currentTimeMillis());
     date.add(Calendar.DATE, duration);
   }
-  public Member getMember() {
-    return member;
+  public Client getClient() {
+    return client;
   }
-  public Book getBook() {
-    return book;
+  public Product getProduct() {
+    return product;
   }
   public Calendar getDate() {
     return date;
