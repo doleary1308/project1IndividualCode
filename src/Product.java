@@ -9,11 +9,12 @@ public class Product implements Serializable {
   private Client wishlistedBy;
   private List waits = new LinkedList();
   private Calendar dueDate;
+  private static final String PRODUCT_STRING = "P";
 
-  public Product(String name, String quantity, String id) {
+  public Product(String name, String quantity) {
     this.name = name;
     this.quantity = quantity;
-    this.id = id;
+    id = PRODUCT_STRING + (ProductIdServer.instance()).getId();
   }
   public boolean issue(Client client) {
     wishlistedBy = client;

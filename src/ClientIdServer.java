@@ -27,7 +27,7 @@ public class ClientIdServer implements Serializable {
       cnfe.printStackTrace();
     }
   }
-  private void writeObject(java.io.ObjectOutputStream output) throws IOException {
+  private void writeObject(ObjectOutputStream output) throws IOException {
     try {
       output.defaultWriteObject();
       output.writeObject(server);
@@ -35,7 +35,7 @@ public class ClientIdServer implements Serializable {
       ioe.printStackTrace();
     }
   }
-  private void readObject(java.io.ObjectInputStream input) throws IOException, ClassNotFoundException {
+  private void readObject(ObjectInputStream input) throws IOException, ClassNotFoundException {
     try {
       input.defaultReadObject();
       if (server == null) {

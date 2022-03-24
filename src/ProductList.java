@@ -38,7 +38,7 @@ public class ProductList implements Serializable {
   public Iterator getProducts() {
     return products.iterator();
   }
-  private void writeObject(java.io.ObjectOutputStream output) {
+  private void writeObject(ObjectOutputStream output) {
     try {
       output.defaultWriteObject();
       output.writeObject(productList);
@@ -46,7 +46,7 @@ public class ProductList implements Serializable {
       System.out.println(ioe);
     }
   }
-  private void readObject(java.io.ObjectInputStream input) {
+  private void readObject(ObjectInputStream input) {
     try {
       if (productList != null) {
         return;

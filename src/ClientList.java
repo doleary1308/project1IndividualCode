@@ -26,7 +26,7 @@ public class ClientList implements Serializable {
     clients.add(client);
     return true;
   }
-  private void writeObject(java.io.ObjectOutputStream output) {
+  private void writeObject(ObjectOutputStream output) {
     try {
       output.defaultWriteObject();
       output.writeObject(clientList);
@@ -34,7 +34,7 @@ public class ClientList implements Serializable {
       ioe.printStackTrace();
     }
   }
-  private void readObject(java.io.ObjectInputStream input) {
+  private void readObject(ObjectInputStream input) {
     try {
       if (clientList != null) {
         return;

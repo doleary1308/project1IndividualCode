@@ -126,9 +126,8 @@ public class UserInterface {
     Product result;
     do {
       String name = getToken("Enter name");
-      String productID = getToken("Enter id");
-      String author = getToken("Enter author");
-      result = warehouse.addProduct(name, author, productID);
+      String quantity = getToken("Enter quantity");
+      result = warehouse.addProduct(name, quantity);
       if (result != null) {
         System.out.println(result);
       } else {

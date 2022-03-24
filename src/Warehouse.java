@@ -26,8 +26,8 @@ public class Warehouse implements Serializable {
       return warehouse;
     }
   }
-  public Product addProduct(String title, String author, String id) {
-    Product product = new Product(title, author, id);
+  public Product addProduct(String title, String author) {
+    Product product = new Product(title, author);
     if (productList.insertProduct(product)) {
       return (product);
     }
@@ -201,7 +201,7 @@ public class Warehouse implements Serializable {
       return false;
     }
   }
-  private void writeObject(java.io.ObjectOutputStream output) {
+  private void writeObject(ObjectOutputStream output) {
     try {
       output.defaultWriteObject();
       output.writeObject(warehouse);
@@ -209,7 +209,7 @@ public class Warehouse implements Serializable {
       System.out.println(ioe);
     }
   }
-  private void readObject(java.io.ObjectInputStream input) {
+  private void readObject(ObjectInputStream input) {
     try {
       input.defaultReadObject();
       if (warehouse == null) {
