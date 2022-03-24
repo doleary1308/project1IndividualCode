@@ -6,7 +6,7 @@ public class Client implements Serializable {
   private String address;
   private String phone;
   private String id;
-  private static final String CLIENT_STRING = "M";
+  private static final String CLIENT_STRING = "C";
   private List productsInWishlist = new LinkedList();
   private List productsOnWait = new LinkedList();
   private List invoices = new LinkedList();

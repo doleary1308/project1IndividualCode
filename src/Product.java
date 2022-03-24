@@ -4,15 +4,15 @@ import java.io.*;
 public class Product implements Serializable {
   private static final long serialVersionUID = 1L;
   private String name;
-  private String author;
+  private String quantity;
   private String id;
   private Client wishlistedBy;
   private List waits = new LinkedList();
   private Calendar dueDate;
 
-  public Product(String name, String author, String id) {
+  public Product(String name, String quantity, String id) {
     this.name = name;
-    this.author = author;
+    this.quantity = quantity;
     this.id = id;
   }
   public boolean issue(Client client) {
@@ -74,8 +74,8 @@ public class Product implements Serializable {
   public Iterator getWaits() {
     return waits.iterator();
   }
-  public String getAuthor() {
-    return author;
+  public String getQuantity() {
+    return quantity;
   }
   public String getName() {
     return name;
@@ -90,6 +90,6 @@ public class Product implements Serializable {
       return (dueDate.getTime().toString());
   }
   public String toString() {
-    return "Name: " + name + " | Author: " + author + " | ID: " + id + " |  Wishlisted By: " + wishlistedBy;
+    return "Name: " + name + " | Quantity: " + quantity + " | ID: " + id + " |  Wishlisted By: " + wishlistedBy;
   }
 }
