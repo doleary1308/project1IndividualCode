@@ -36,7 +36,7 @@ public class Client implements Serializable {
       Product aProduct = (Product) iterator.next();
       String id = aProduct.getId();
       if (id.equals(product.getId())) {
-        invoices.add(new Invoice("Product checked out ",  product.getName()));
+        invoices.add(new Invoice("Product Checked Out: ",  product.getName()));
         return true;
       }
     }
@@ -46,7 +46,7 @@ public class Client implements Serializable {
     return (productsInWishlist.listIterator());
   }
   public void placeWait(Wait wait) {
-    invoices.add(new Invoice("Wait Placed ", wait.getProduct().getName()));
+    invoices.add(new Invoice("Wait Placed On: ", wait.getProduct().getName()));
     productsOnWait.add(wait);
   }
   public boolean removeWait(String productId) {
@@ -54,7 +54,7 @@ public class Client implements Serializable {
       Wait wait = (Wait) iterator.next();
       String id = wait.getProduct().getId();
       if (id.equals(productId)) {
-        invoices.add(new Invoice("Wait Removed ", wait.getProduct().getName()));
+        invoices.add(new Invoice("Wait Removed From: ", wait.getProduct().getName()));
         iterator.remove();
         return true;
       }
@@ -96,18 +96,18 @@ public class Client implements Serializable {
     return this.id.equals(id);
   }
   public String toString() {
-    String string = "Client name " + name + " address " + address + " id " + id + "phone " + phone;
-    string += " Wishlist: [";
+    String string = "Client Name: " + name + " | Address: " + address + " | ID: " + id + " | Phone: " + phone;
+    string += "\n   Wishlist: [";
     for (Iterator iterator = productsInWishlist.iterator(); iterator.hasNext(); ) {
       Product product = (Product) iterator.next();
       string += " " + product.getName();
     }
-    string += "] waits: [";
+    string += "]\n   Waits: [";
     for (Iterator iterator = productsOnWait.iterator(); iterator.hasNext(); ) {
       Wait wait = (Wait) iterator.next();
       string += " " + wait.getProduct().getName();
     }
-    string += "] invoices: [";
+    string += "]\n   Invoices: [";
     for (Iterator iterator = invoices.iterator(); iterator.hasNext(); ) {
       string += (Invoice) iterator.next();
     }

@@ -112,8 +112,8 @@ public class UserInterface {
 
   public void addClient() {
     String name = getToken("Enter client name");
-    String address = getToken("Enter address");
-    String phone = getToken("Enter phone");
+    String address = getToken("Enter client address");
+    String phone = getToken("Enter client phone");
     Client result;
     result = warehouse.addClient(name, address, phone);
     if (result == null) {

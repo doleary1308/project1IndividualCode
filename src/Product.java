@@ -90,6 +90,6 @@ public class Product implements Serializable {
       return (dueDate.getTime().toString());
   }
   public String toString() {
-    return "name " + name + " author " + author + " id " + id + " wishlisted by " + wishlistedBy;
+    return "Name: " + name + " | Author: " + author + " | ID: " + id + " |  Wishlisted By: " + wishlistedBy;
   }
 }
