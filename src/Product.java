@@ -1,52 +1,53 @@
+import java.io.Serializable;
 import java.util.*;
-import java.lang.*;
-import java.io.*;
+
 public class Product implements Serializable {
   private static final long serialVersionUID = 1L;
   private String name;
-  private String author;
+  private String quantity;
   private String id;
-  private Client borrowedBy;
-  private List holds = new LinkedList();
+  private Client wishlistedBy;
+  private List waits = new LinkedList();
   private Calendar dueDate;
+  private static final String PRODUCT_STRING = "P";
 
-  public Product(String name, String author, String id) {
+  public Product(String name, String quantity) {
     this.name = name;
-    this.author = author;
-    this.id = id;
+    this.quantity = quantity;
+    id = PRODUCT_STRING + (ProductIdServer.instance()).getId();
   }
   public boolean issue(Client client) {
-    borrowedBy = client;
+    wishlistedBy = client;
     dueDate = new GregorianCalendar();
     dueDate.setTimeInMillis(System.currentTimeMillis());
     dueDate.add(Calendar.MONTH, 1);
     return true;
   }
   public Client returnProduct() {
-    if (borrowedBy == null) {
+    if (wishlistedBy == null) {
       return null;
     } else {
-      Client borrower = borrowedBy;
-      borrowedBy = null;
-      return borrower;
+      Client wishlister = wishlistedBy;
+      wishlistedBy = null;
+      return wishlister;
     }
   }
-  public boolean renew(Client client) {
-    if (hasHold()) {
+  public boolean checkOut(Client client) {
+    if (hasWait()) {
       return false;
     }
-    if ((client.getId()).equals(borrowedBy.getId())) {
+    if ((client.getId()).equals(wishlistedBy.getId())) {
       return (issue(client));
     }
     return false;
   }
-  public void placeHold(Hold hold) {
-    holds.add(hold);
+  public void placeWait(Wait wait) {
+    waits.add(wait);
   }
-  public boolean removeHold(String clientId) {
-    for (ListIterator iterator = holds.listIterator(); iterator.hasNext(); ) {
-      Hold hold = (Hold) iterator.next();
-      String id = hold.getClient().getId();
+  public boolean removeWait(String clientId) {
+    for (ListIterator iterator = waits.listIterator(); iterator.hasNext(); ) {
+      Wait wait = (Wait) iterator.next();
+      String id = wait.getClient().getId();
       if (id.equals(clientId)) {
         iterator.remove();
         return true;
@@ -54,28 +55,28 @@ public class Product implements Serializable {
     }
     return false;
   }
-  public Hold getNextHold() {
-    for (ListIterator iterator = holds.listIterator(); iterator.hasNext(); ) {
-      Hold hold = (Hold) iterator.next();
+  public Wait getNextWait() {
+    for (ListIterator iterator = waits.listIterator(); iterator.hasNext(); ) {
+      Wait wait = (Wait) iterator.next();
       iterator.remove();
-      if (hold.isValid()) {
-        return hold;
+      if (wait.isValid()) {
+        return wait;
       }
     }
     return null;
   }
-  public boolean hasHold() {
-    ListIterator iterator = holds.listIterator();
+  public boolean hasWait() {
+    ListIterator iterator = waits.listIterator();
     if (iterator.hasNext()) {
       return true;
     }
     return false;
   }
-  public Iterator getHolds() {
-    return holds.iterator();
+  public Iterator getWaits() {
+    return waits.iterator();
   }
-  public String getAuthor() {
-    return author;
+  public String getQuantity() {
+    return quantity;
   }
   public String getName() {
     return name;
@@ -83,13 +84,13 @@ public class Product implements Serializable {
   public String getId() {
     return id;
   }
-  public Client getBorrower() {
-    return borrowedBy;
+  public Client getWishlister() {
+    return wishlistedBy;
   }
   public String getDueDate() {
       return (dueDate.getTime().toString());
   }
   public String toString() {
-    return "name " + name + " author " + author + " id " + id + " borrowed by " + borrowedBy;
+    return "Name: " + name + " | Quantity: " + quantity + " | ID: " + id + " |  Wishlisted By: " + wishlistedBy;
   }
 }

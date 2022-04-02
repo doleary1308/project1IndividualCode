@@ -1,10 +1,12 @@
-import java.util.*;
-import java.io.*;
-public class Hold implements Serializable {
+import java.io.Serializable;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
+public class Wait implements Serializable {
   private Product product;
   private Client client;
   private Calendar date;
-  public Hold(Client client, Product product, int duration) {
+  public Wait(Client client, Product product, int duration) {
     this.product = product;
     this.client = client;
     date = new GregorianCalendar();

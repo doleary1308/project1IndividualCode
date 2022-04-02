@@ -1,5 +1,11 @@
-import java.util.*;
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 public class ClientList implements Serializable {
   private static final long serialVersionUID = 1L;
   private List clients = new LinkedList();
@@ -26,7 +32,7 @@ public class ClientList implements Serializable {
     clients.add(client);
     return true;
   }
-  private void writeObject(java.io.ObjectOutputStream output) {
+  private void writeObject(ObjectOutputStream output) {
     try {
       output.defaultWriteObject();
       output.writeObject(clientList);
@@ -34,7 +40,7 @@ public class ClientList implements Serializable {
       ioe.printStackTrace();
     }
   }
-  private void readObject(java.io.ObjectInputStream input) {
+  private void readObject(ObjectInputStream input) {
     try {
       if (clientList != null) {
         return;
