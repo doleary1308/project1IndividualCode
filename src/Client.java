@@ -1,14 +1,15 @@
+import java.io.Serializable;
 import java.util.*;
-import java.io.*;
+
 public class Client implements Serializable {
   private static final long serialVersionUID = 1L;
   private String name;
   private String address;
   private String phone;
   private String id;
-  private static final String CLIENT_STRING = "M";
-  private List productsBorrowed = new LinkedList();
-  private List productsOnHold = new LinkedList();
+  private static final String CLIENT_STRING = "C";
+  private List productsInWishlist = new LinkedList();
+  private List productsOnWait = new LinkedList();
   private List invoices = new LinkedList();
   public Client(String name, String address, String phone) {
     this.name = name;
@@ -17,44 +18,44 @@ public class Client implements Serializable {
     id = CLIENT_STRING + (ClientIdServer.instance()).getId();
   }
   public boolean issue(Product product) {
-    if (productsBorrowed.add(product)) {
+    if (productsInWishlist.add(product)) {
       invoices.add(new Invoice("Product issued ", product.getName()));
       return true;
     }
     return false;
   }
   public boolean returnProduct(Product product) {
-    if ( productsBorrowed.remove(product)){
+    if ( productsInWishlist.remove(product)){
       invoices.add(new Invoice("Product returned ", product.getName()));
       return true;
     }
     return false;
   }
 
-  public boolean renew(Product product) {
-    for (ListIterator iterator = productsBorrowed.listIterator(); iterator.hasNext(); ) {
+  public boolean checkOut(Product product) {
+    for (ListIterator iterator = productsInWishlist.listIterator(); iterator.hasNext(); ) {
       Product aProduct = (Product) iterator.next();
       String id = aProduct.getId();
       if (id.equals(product.getId())) {
-        invoices.add(new Invoice("Product renewed ",  product.getName()));
+        invoices.add(new Invoice("Product Checked Out: ",  product.getName()));
         return true;
       }
     }
     return false;
   }
   public Iterator getProductsIssued() {
-    return (productsBorrowed.listIterator());
+    return (productsInWishlist.listIterator());
   }
-  public void placeHold(Hold hold) {
-    invoices.add(new Invoice("Hold Placed ", hold.getProduct().getName()));
-    productsOnHold.add(hold);
+  public void placeWait(Wait wait) {
+    invoices.add(new Invoice("Wait Placed On: ", wait.getProduct().getName()));
+    productsOnWait.add(wait);
   }
-  public boolean removeHold(String productId) {
-    for (ListIterator iterator = productsOnHold.listIterator(); iterator.hasNext(); ) {
-      Hold hold = (Hold) iterator.next();
-      String id = hold.getProduct().getId();
+  public boolean removeWait(String productId) {
+    for (ListIterator iterator = productsOnWait.listIterator(); iterator.hasNext(); ) {
+      Wait wait = (Wait) iterator.next();
+      String id = wait.getProduct().getId();
       if (id.equals(productId)) {
-        invoices.add(new Invoice("Hold Removed ", hold.getProduct().getName()));
+        invoices.add(new Invoice("Wait Removed From: ", wait.getProduct().getName()));
         iterator.remove();
         return true;
       }
@@ -96,18 +97,18 @@ public class Client implements Serializable {
     return this.id.equals(id);
   }
   public String toString() {
-    String string = "Client name " + name + " address " + address + " id " + id + "phone " + phone;
-    string += " borrowed: [";
-    for (Iterator iterator = productsBorrowed.iterator(); iterator.hasNext(); ) {
+    String string = "Client Name: " + name + " | Address: " + address + " | ID: " + id + " | Phone: " + phone;
+    string += "\n   Wishlist: [";
+    for (Iterator iterator = productsInWishlist.iterator(); iterator.hasNext(); ) {
       Product product = (Product) iterator.next();
       string += " " + product.getName();
     }
-    string += "] holds: [";
-    for (Iterator iterator = productsOnHold.iterator(); iterator.hasNext(); ) {
-      Hold hold = (Hold) iterator.next();
-      string += " " + hold.getProduct().getName();
+    string += "]\n   Waits: [";
+    for (Iterator iterator = productsOnWait.iterator(); iterator.hasNext(); ) {
+      Wait wait = (Wait) iterator.next();
+      string += " " + wait.getProduct().getName();
     }
-    string += "] invoices: [";
+    string += "]\n   Invoices: [";
     for (Iterator iterator = invoices.iterator(); iterator.hasNext(); ) {
       string += (Invoice) iterator.next();
     }

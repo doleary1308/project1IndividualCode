@@ -1,6 +1,11 @@
-import java.util.*;
-import java.lang.*;
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 public class ProductList implements Serializable {
   private static final long serialVersionUID = 1L;
   private List products = new LinkedList();
@@ -38,7 +43,7 @@ public class ProductList implements Serializable {
   public Iterator getProducts() {
     return products.iterator();
   }
-  private void writeObject(java.io.ObjectOutputStream output) {
+  private void writeObject(ObjectOutputStream output) {
     try {
       output.defaultWriteObject();
       output.writeObject(productList);
@@ -46,7 +51,7 @@ public class ProductList implements Serializable {
       System.out.println(ioe);
     }
   }
-  private void readObject(java.io.ObjectInputStream input) {
+  private void readObject(ObjectInputStream input) {
     try {
       if (productList != null) {
         return;
@@ -59,7 +64,7 @@ public class ProductList implements Serializable {
         }
       }
     } catch(IOException ioe) {
-      System.out.println("in Catalog readObject \n" + ioe);
+      System.out.println("in ProductList readObject \n" + ioe);
     } catch(ClassNotFoundException cnfe) {
       cnfe.printStackTrace();
     }

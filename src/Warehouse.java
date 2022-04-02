@@ -1,13 +1,15 @@
-import java.util.*;
 import java.io.*;
+import java.util.Calendar;
+import java.util.Iterator;
+
 public class Warehouse implements Serializable {
   private static final long serialVersionUID = 1L;
   public static final int PRODUCT_NOT_FOUND  = 1;
   public static final int PRODUCT_NOT_ISSUED  = 2;
-  public static final int PRODUCT_HAS_HOLD  = 3;
+  public static final int PRODUCT_HAS_WAIT  = 3;
   public static final int PRODUCT_ISSUED  = 4;
-  public static final int HOLD_PLACED  = 5;
-  public static final int NO_HOLD_FOUND  = 6;
+  public static final int WAIT_PLACED  = 5;
+  public static final int NO_WAIT_FOUND  = 6;
   public static final int OPERATION_COMPLETED= 7;
   public static final int OPERATION_FAILED= 8;
   public static final int NO_SUCH_CLIENT = 9;
@@ -26,8 +28,8 @@ public class Warehouse implements Serializable {
       return warehouse;
     }
   }
-  public Product addProduct(String title, String author, String id) {
-    Product product = new Product(title, author, id);
+  public Product addProduct(String title, String author) {
+    Product product = new Product(title, author);
     if (productList.insertProduct(product)) {
       return (product);
     }
@@ -40,40 +42,40 @@ public class Warehouse implements Serializable {
     }
     return null;
   }
-  public int placeHold(String clientId, String productId, int duration) {
+  public int placeWait(String clientId, String productId, int duration) {
     Product product = productList.search(productId);
     if (product == null) {
       return(PRODUCT_NOT_FOUND);
     }
-    if (product.getBorrower() == null) {
+    if (product.getWishlister() == null) {
       return(PRODUCT_NOT_ISSUED);
     }
     Client client = clientList.search(clientId);
     if (client == null) {
       return(NO_SUCH_CLIENT);
     }
-    Hold hold = new Hold(client, product, duration);
-    product.placeHold(hold);
-    client.placeHold(hold);
-    return(HOLD_PLACED);
+    Wait wait = new Wait(client, product, duration);
+    product.placeWait(wait);
+    client.placeWait(wait);
+    return(WAIT_PLACED);
   }
   public Client searchMembership(String clientId) {
     return clientList.search(clientId);
   }
-  public Client processHold(String productId) {
+  public Client acceptShipment(String productId) {
     Product product = productList.search(productId);
     if (product == null) {
       return (null);
     }
-    Hold hold = product.getNextHold();
-    if (hold == null) {
+    Wait wait = product.getNextWait();
+    if (wait == null) {
       return (null);
     }
-    hold.getClient().removeHold(productId);
-    hold.getProduct().removeHold(hold.getClient().getId());
-    return (hold.getClient());
+    wait.getClient().removeWait(productId);
+    wait.getProduct().removeWait(wait.getClient().getId());
+    return (wait.getClient());
   }
-  public int removeHold(String clientId, String productId) {
+  public int removeWait(String clientId, String productId) {
     Client client = clientList.search(clientId);
     if (client == null) {
       return (NO_SUCH_CLIENT);
@@ -82,15 +84,15 @@ public class Warehouse implements Serializable {
     if (product == null) {
       return(PRODUCT_NOT_FOUND);
     }
-    return client.removeHold(productId) && product.removeHold(clientId)? OPERATION_COMPLETED: NO_HOLD_FOUND;
+    return client.removeWait(productId) && product.removeWait(clientId)? OPERATION_COMPLETED: NO_WAIT_FOUND;
   }
-  public void removeInvalidHolds() {
+  public void removeInvalidWaits() {
     for (Iterator catalogIterator = productList.getProducts(); catalogIterator.hasNext(); ) {
-      for (Iterator iterator = ((Product) catalogIterator.next()).getHolds(); iterator.hasNext(); ) {
-        Hold hold = (Hold) iterator.next();
-        if (!hold.isValid()) {
-          hold.getProduct().removeHold(hold.getClient().getId());
-          hold.getClient().removeHold(hold.getProduct().getId());
+      for (Iterator iterator = ((Product) catalogIterator.next()).getWaits(); iterator.hasNext(); ) {
+        Wait wait = (Wait) iterator.next();
+        if (!wait.isValid()) {
+          wait.getProduct().removeWait(wait.getClient().getId());
+          wait.getClient().removeWait(wait.getProduct().getId());
         }
       }
     }
@@ -100,7 +102,7 @@ public class Warehouse implements Serializable {
     if (product == null) {
       return(null);
     }
-    if (product.getBorrower() != null) {
+    if (product.getWishlister() != null) {
       return(null);
     }
     Client client = clientList.search(clientId);
@@ -112,7 +114,7 @@ public class Warehouse implements Serializable {
     }
     return(product);
   }
-  public Product renewProduct(String productId, String clientId) {
+  public Product checkOut(String productId, String clientId) {
     Product product = productList.search(productId);
     if (product == null) {
       return(null);
@@ -121,7 +123,7 @@ public class Warehouse implements Serializable {
     if (client == null) {
       return(null);
     }
-    if ((product.renew(client) && client.renew(product))) {
+    if ((product.checkOut(client) && client.checkOut(product))) {
       return(product);
     }
     return(null);
@@ -139,10 +141,10 @@ public class Warehouse implements Serializable {
     if (product == null) {
       return(PRODUCT_NOT_FOUND);
     }
-    if (product.hasHold()) {
-      return(PRODUCT_HAS_HOLD);
+    if (product.hasWait()) {
+      return(PRODUCT_HAS_WAIT);
     }
-    if ( product.getBorrower() != null) {
+    if ( product.getWishlister() != null) {
       return(PRODUCT_ISSUED);
     }
     if (productList.removeProduct(productId)) {
@@ -162,8 +164,8 @@ public class Warehouse implements Serializable {
     if (!(client.returnProduct(product))) {
       return(OPERATION_FAILED);
     }
-    if (product.hasHold()) {
-      return(PRODUCT_HAS_HOLD);
+    if (product.hasWait()) {
+      return(PRODUCT_HAS_WAIT);
     }
     return(OPERATION_COMPLETED);
   }
@@ -201,7 +203,7 @@ public class Warehouse implements Serializable {
       return false;
     }
   }
-  private void writeObject(java.io.ObjectOutputStream output) {
+  private void writeObject(ObjectOutputStream output) {
     try {
       output.defaultWriteObject();
       output.writeObject(warehouse);
@@ -209,7 +211,7 @@ public class Warehouse implements Serializable {
       System.out.println(ioe);
     }
   }
-  private void readObject(java.io.ObjectInputStream input) {
+  private void readObject(ObjectInputStream input) {
     try {
       input.defaultReadObject();
       if (warehouse == null) {
