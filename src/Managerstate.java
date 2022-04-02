@@ -1,10 +1,10 @@
 import java.util.*;
 import java.text.*;
 import java.io.*;
-public class Managerstate extends LibState {
+public class Managerstate extends WarehouseState {
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private static Warehouse warehouse;
-    private LibContext context;
+    private WarehouseContext context;
     private static Managerstate instance;
     private static final int EXIT = 0;
     private static final int ADD_PRODUCTS_TO_WAREHOUSE = 1;
@@ -126,8 +126,8 @@ public class Managerstate extends LibState {
     {
         String userID = getToken("Please input the user id: ");
         if (Warehouse.instance().searchMembership(userID) != null){
-            (LibContext.instance()).setUser(userID);
-            (LibContext.instance()).changeState(1);         //copied over from clerkstate!!!!!!!!
+            (WarehouseContext.instance()).setUser(userID);
+            (WarehouseContext.instance()).changeState(1);         //copied over from clerkstate!!!!!!!!
         }
         else
             System.out.println("Invalid user id.");
@@ -135,7 +135,7 @@ public class Managerstate extends LibState {
 
     public void logout()
     {
-        (LibContext.instance()).changeState(0); // exit with a code 0
+        (WarehouseContext.instance()).changeState(0); // exit with a code 0
     }
 
 

@@ -1,7 +1,7 @@
 import java.util.*;
 import java.text.*;
 import java.io.*;
-public class Clientstate extends LibState {
+public class Clientstate extends WarehouseState {
   private static Clientstate clientstate;
   private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
   private static Warehouse warehouse;
@@ -95,7 +95,7 @@ public class Clientstate extends LibState {
 
   public void addProductsToClientWishlist() {
     Product result;
-    String clientID = LibContext.instance().getUser();
+    String clientID = WarehouseContext.instance().getUser();
     do {
       String productID = getToken("Enter product id");
       result = warehouse.issueProduct(clientID, productID);
@@ -112,7 +112,7 @@ public class Clientstate extends LibState {
 
   public void checkOut() {
     Product result;
-    String clientID = LibContext.instance().getUser();
+    String clientID = WarehouseContext.instance().getUser();
     Iterator wishlistedProducts = warehouse.getProducts(clientID);
     while (wishlistedProducts.hasNext()){
       Product product = (Product)(wishlistedProducts.next());
@@ -129,7 +129,7 @@ public class Clientstate extends LibState {
 
 
   public void placeWait() {
-    String clientID = LibContext.instance().getUser();
+    String clientID = WarehouseContext.instance().getUser();
     String productID = getToken("Enter product id");
     int duration = getNumber("Enter duration of wait");
     int result = warehouse.placeWait(clientID, productID, duration);
@@ -152,7 +152,7 @@ public class Clientstate extends LibState {
   }
 
   public void removeWait() {
-    String clientID = LibContext.instance().getUser();
+    String clientID = WarehouseContext.instance().getUser();
     String productID = getToken("Enter product id");
     int result = warehouse.removeWait(clientID, productID);
     switch(result){
@@ -172,7 +172,7 @@ public class Clientstate extends LibState {
 
   public void getInvoices() {
     Iterator result;
-    String clientID = LibContext.instance().getUser();
+    String clientID = WarehouseContext.instance().getUser();
     Calendar date  = getDate("Please enter the date for which you want records as mm/dd/yy");
     result = warehouse.getInvoices(clientID,date);
     if (result == null) {
@@ -215,15 +215,15 @@ public class Clientstate extends LibState {
 
   public void logout()
   {
-    if ((LibContext.instance()).getLogin() == LibContext.IsClerk)
+    if ((WarehouseContext.instance()).getLogin() == WarehouseContext.IsClerk)
        { //stem.out.println(" going to clerk \n ");
-         (LibContext.instance()).changeState(1); // exit with a code 1
+         (WarehouseContext.instance()).changeState(1); // exit with a code 1
         }
-    else if (LibContext.instance().getLogin() == LibContext.IsUser)
+    else if (WarehouseContext.instance().getLogin() == WarehouseContext.IsUser)
        {  //stem.out.println(" going to login \n");
-        (LibContext.instance()).changeState(0); // exit with a code 2
+        (WarehouseContext.instance()).changeState(0); // exit with a code 2
        }
     else 
-       (LibContext.instance()).changeState(2); // exit code 2, indicates error
+       (WarehouseContext.instance()).changeState(2); // exit code 2, indicates error
   }
 }

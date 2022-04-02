@@ -1,12 +1,11 @@
 import java.util.*;
-import java.text.*;
 import java.io.*;
-public class Loginstate extends LibState{
+public class Loginstate extends WarehouseState {
   private static final int CLERK_LOGIN = 0;
   private static final int USER_LOGIN = 1;
   private static final int EXIT = 2;
   private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));  
-  private LibContext context;
+  private WarehouseContext context;
   private static Loginstate instance;
   private Loginstate() {
       super();
@@ -57,16 +56,16 @@ public class Loginstate extends LibState{
   }
 
   private void clerk(){
-    (LibContext.instance()).setLogin(LibContext.IsClerk);
-    (LibContext.instance()).changeState(0);
+    (WarehouseContext.instance()).setLogin(WarehouseContext.IsClerk);
+    (WarehouseContext.instance()).changeState(0);
   }
 
   private void user(){
     String userID = getToken("Please input the user id: ");
     if (Warehouse.instance().searchMembership(userID) != null){
-      (LibContext.instance()).setLogin(LibContext.IsUser);
-      (LibContext.instance()).setUser(userID);      
-      (LibContext.instance()).changeState(1);
+      (WarehouseContext.instance()).setLogin(WarehouseContext.IsUser);
+      (WarehouseContext.instance()).setUser(userID);
+      (WarehouseContext.instance()).changeState(1);
     }
     else 
       System.out.println("Invalid user id.");
@@ -91,7 +90,7 @@ public class Loginstate extends LibState{
                         "input 1 to login as user\n" +
                         "input 2 to exit the system\n"); 
     }
-    (LibContext.instance()).changeState(2);
+    (WarehouseContext.instance()).changeState(2);
   }
 
   public void run() {

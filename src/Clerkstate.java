@@ -1,10 +1,10 @@
 import java.util.*;
 import java.text.*;
 import java.io.*;
-public class Clerkstate extends LibState {
+public class Clerkstate extends WarehouseState {
   private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
   private static Warehouse warehouse;
-  private LibContext context;
+  private WarehouseContext context;
   private static Clerkstate instance;
   private static final int EXIT = 0;
   private static final int ADD_CLIENT = 1;
@@ -208,8 +208,8 @@ public class Clerkstate extends LibState {
   {
     String userID = getToken("Please input the user id: ");
     if (Warehouse.instance().searchMembership(userID) != null){
-      (LibContext.instance()).setUser(userID);      
-      (LibContext.instance()).changeState(1);
+      (WarehouseContext.instance()).setUser(userID);
+      (WarehouseContext.instance()).changeState(1);
     }
     else 
       System.out.println("Invalid user id."); 
@@ -217,7 +217,7 @@ public class Clerkstate extends LibState {
 
   public void logout()
   {
-    (LibContext.instance()).changeState(0); // exit with a code 0
+    (WarehouseContext.instance()).changeState(0); // exit with a code 0
   }
  
 
