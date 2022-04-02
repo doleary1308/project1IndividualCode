@@ -1,26 +1,26 @@
-/*import java.util.*;
+import java.util.*;
 import java.text.*;
 import java.io.*;
-public class Userstate extends LibState {
-  private static Userstate userstate;
+public class Clientstate extends LibState {
+  private static Clientstate clientstate;
   private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-  private static Library library;
+  private static Warehouse warehouse;
   private static final int EXIT = 0;
-  private static final int ISSUE_BOOKS = 3;
-  private static final int RENEW_BOOKS = 5;
-  private static final int PLACE_HOLD = 7;
-  private static final int REMOVE_HOLD = 8;
-  private static final int GET_TRANSACTIONS = 10;
+  private static final int ADD_PRODUCTS_TO_WISHLIST = 3;
+  private static final int CHECK_OUT = 5;
+  private static final int PLACE_WAIT = 7;
+  private static final int REMOVE_WAIT = 8;
+  private static final int GET_INVOICES = 10;
   private static final int HELP = 13;
-  private Userstate() {
-    library = Library.instance();
+  private Clientstate() {
+    warehouse = Warehouse.instance();
   }
 
-  public static Userstate instance() {
-    if (userstate == null) {
-      return userstate = new Userstate();
+  public static Clientstate instance() {
+    if (clientstate == null) {
+      return clientstate = new Clientstate();
     } else {
-      return userstate;
+      return clientstate;
     }
   }
   public String getToken(String prompt) {
@@ -84,105 +84,105 @@ public class Userstate extends LibState {
   public void help() {
     System.out.println("Enter a number between 0 and 12 as explained below:");
     System.out.println(EXIT + " to Exit\n");
-    System.out.println(ISSUE_BOOKS + " to  issue books to a  member");
-    System.out.println(RENEW_BOOKS + " to  renew books ");
-    System.out.println(PLACE_HOLD + " to  place a hold on a book");
-    System.out.println(REMOVE_HOLD + " to  remove a hold on a book");
-    System.out.println(GET_TRANSACTIONS + " to  print transactions");
+    System.out.println(ADD_PRODUCTS_TO_WISHLIST + " to add products to a client's wishlist");
+    System.out.println(CHECK_OUT + " to check out products ");
+    System.out.println(PLACE_WAIT + " to place a wait on a product");
+    System.out.println(REMOVE_WAIT + " to remove a wait on a product");
+    System.out.println(GET_INVOICES + " to print invoices");
     System.out.println(HELP + " for help");
   }
 
 
-  public void issueBooks() {
-    Book result;
-    String memberID = LibContext.instance().getUser();
+  public void addProductsToClientWishlist() {
+    Product result;
+    String clientID = LibContext.instance().getUser();
     do {
-      String bookID = getToken("Enter book id");
-      result = library.issueBook(memberID, bookID);
+      String productID = getToken("Enter product id");
+      result = warehouse.issueProduct(clientID, productID);
       if (result != null){
-        System.out.println(result.getTitle()+ "   " +  result.getDueDate());
+        System.out.println(result.getName()+ "   " +  result.getDueDate());
       } else {
-          System.out.println("Book could not be issued");
+          System.out.println("Product could not be added");
       }
-      if (!yesOrNo("Issue more books?")) {
+      if (!yesOrNo("Add more products?")) {
         break;
       }
     } while (true);
   }
 
-  public void renewBooks() {
-    Book result;
-    String memberID = LibContext.instance().getUser();
-    Iterator issuedBooks = library.getBooks(memberID);
-    while (issuedBooks.hasNext()){
-      Book book = (Book)(issuedBooks.next());
-      if (yesOrNo(book.getTitle())) {
-        result = library.renewBook(book.getId(), memberID);
+  public void checkOut() {
+    Product result;
+    String clientID = LibContext.instance().getUser();
+    Iterator wishlistedProducts = warehouse.getProducts(clientID);
+    while (wishlistedProducts.hasNext()){
+      Product product = (Product)(wishlistedProducts.next());
+      if (yesOrNo(product.getName())) {
+        result = warehouse.checkOut(product.getId(), clientID);
         if (result != null){
-          System.out.println(result.getTitle()+ "   " + result.getDueDate());
+          System.out.println(result.getName()+ "   " + result.getDueDate());
         } else {
-          System.out.println("Book is not renewable");
+          System.out.println("Product is not able to be checked out");
         }
       }
     }
   }
 
 
-  public void placeHold() {
-    String memberID = LibContext.instance().getUser();
-    String bookID = getToken("Enter book id");
-    int duration = getNumber("Enter duration of hold");
-    int result = library.placeHold(memberID, bookID, duration);
+  public void placeWait() {
+    String clientID = LibContext.instance().getUser();
+    String productID = getToken("Enter product id");
+    int duration = getNumber("Enter duration of wait");
+    int result = warehouse.placeWait(clientID, productID, duration);
     switch(result){
-      case Library.BOOK_NOT_FOUND:
-        System.out.println("No such Book in Library");
+      case Warehouse.PRODUCT_NOT_FOUND:
+        System.out.println("No such Product in Warehouse");
         break;
-      case Library.BOOK_NOT_ISSUED:
-        System.out.println(" Book is not checked out");
+      case Warehouse.PRODUCT_NOT_ISSUED:
+        System.out.println("Product is not in a wishlist");
         break;
-      case Library.NO_SUCH_MEMBER:
-        System.out.println("Not a valid member ID");
+      case Warehouse.NO_SUCH_CLIENT:
+        System.out.println("Not a valid client ID");
         break;
-      case Library.HOLD_PLACED:
-        System.out.println("A hold has been placed");
+      case Warehouse.WAIT_PLACED:
+        System.out.println("A wait has been placed");
         break;
       default:
         System.out.println("An error has occurred");
     }
   }
 
-  public void removeHold() {
-    String memberID = LibContext.instance().getUser();
-    String bookID = getToken("Enter book id");
-    int result = library.removeHold(memberID, bookID);
+  public void removeWait() {
+    String clientID = LibContext.instance().getUser();
+    String productID = getToken("Enter product id");
+    int result = warehouse.removeWait(clientID, productID);
     switch(result){
-      case Library.BOOK_NOT_FOUND:
-        System.out.println("No such Book in Library");
+      case Warehouse.PRODUCT_NOT_FOUND:
+        System.out.println("No such Product in Warehouse");
         break;
-      case Library.NO_SUCH_MEMBER:
-        System.out.println("Not a valid member ID");
+      case Warehouse.NO_SUCH_CLIENT:
+        System.out.println("Not a valid client ID");
         break;
-      case Library.OPERATION_COMPLETED:
-        System.out.println("The hold has been removed");
+      case Warehouse.OPERATION_COMPLETED:
+        System.out.println("The wait has been removed");
         break;
       default:
         System.out.println("An error has occurred");
     }
   }
 
-  public void getTransactions() {
+  public void getInvoices() {
     Iterator result;
-    String memberID = LibContext.instance().getUser();
+    String clientID = LibContext.instance().getUser();
     Calendar date  = getDate("Please enter the date for which you want records as mm/dd/yy");
-    result = library.getTransactions(memberID,date);
+    result = warehouse.getInvoices(clientID,date);
     if (result == null) {
-      System.out.println("Invalid Member ID");
+      System.out.println("Invalid Client ID");
     } else {
       while(result.hasNext()) {
-        Transaction transaction = (Transaction) result.next();
-        System.out.println(transaction.getType() + "   "   + transaction.getTitle() + "\n");
+        Invoice invoice = (Invoice) result.next();
+        System.out.println(invoice.getType() + "   "   + invoice.getName() + "\n");
       }
-      System.out.println("\n  There are no more transactions \n" );
+      System.out.println("\n  There are no more invoices \n" );
     }
   }
 
@@ -192,15 +192,15 @@ public class Userstate extends LibState {
     while ((command = getCommand()) != EXIT) {
       switch (command) {
 
-        case ISSUE_BOOKS:       issueBooks();
+        case ADD_PRODUCTS_TO_WISHLIST:       addProductsToClientWishlist();
                                 break;
-        case RENEW_BOOKS:       renewBooks();
+        case CHECK_OUT:       checkOut();
                                 break;
-        case PLACE_HOLD:        placeHold();
+        case PLACE_WAIT:        placeWait();
                                 break;
-        case REMOVE_HOLD:       removeHold();
+        case REMOVE_WAIT:       removeWait();
                                 break;
-        case GET_TRANSACTIONS:  getTransactions();
+        case GET_INVOICES:  getInvoices();
                                 break;
         case HELP:              help();
                                 break;
@@ -226,6 +226,4 @@ public class Userstate extends LibState {
     else 
        (LibContext.instance()).changeState(2); // exit code 2, indicates error
   }
- 
 }
-*/

@@ -66,7 +66,7 @@ public class LibContext {
 
   private LibContext() { //constructor
     System.out.println("In Libcontext constructor");
-    if (yesOrNo("Look for saved data and  use it?")) {
+    if (yesOrNo("Look for saved data and use it?")) {
       retrieve();
     } else {
       warehouse = Warehouse.instance();
@@ -74,8 +74,8 @@ public class LibContext {
     // set up the FSM and transition table;
     states = new LibState[3];
     states[0] = Clerkstate.instance();
-    //states[1] = Userstate.instance();
-    states[2]=  Loginstate.instance();
+    //states[1] = Clientstate.instance();
+    states[2] = Loginstate.instance();
     nextState = new int[3][3];
     nextState[0][0] = 2;nextState[0][1] = 1;nextState[0][2] = -2;
     nextState[1][0] = 2;nextState[1][1] = 0;nextState[1][2] = -2;

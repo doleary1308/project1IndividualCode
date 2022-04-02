@@ -86,14 +86,14 @@ public class Clerkstate extends LibState {
   }
 
   public void help() {
-    System.out.println("Enter a number between 0 and 12 as explained below:");
+    System.out.println("Enter a number as explained below:");
     System.out.println(EXIT + " to Exit\n");
     System.out.println(ADD_CLIENT + " to add a client");
-    System.out.println(ADD_PRODUCTS_TO_WAREHOUSE + " to  add products to warehouse");
-    System.out.println(RETURN_PRODUCTS + " to  return products ");
-    System.out.println(REMOVE_PRODUCTS + " to  remove products from warehouse");
-    System.out.println(ACCEPT_SHIPMENT + " to  accept a shipment and process waits");
-    System.out.println(USERMENU + " to  switch to the user menu");
+    System.out.println(ADD_PRODUCTS_TO_WAREHOUSE + " to add products to warehouse");
+    System.out.println(RETURN_PRODUCTS + " to return products");
+    System.out.println(REMOVE_PRODUCTS + " to remove products from warehouse");
+    System.out.println(ACCEPT_SHIPMENT + " to accept a shipment and process waits");
+    System.out.println(USERMENU + " to switch to the user menu");
     System.out.println(HELP + " for help");
   }
 
