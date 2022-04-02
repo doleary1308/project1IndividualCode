@@ -216,7 +216,7 @@ public class Clientstate extends WarehouseState {
   public void logout()
   {
     if ((WarehouseContext.instance()).getLogin() == WarehouseContext.IsClerk)
-       { //stem.out.println(" going to clerk \n ");
+       { //System.out.println(" going to clerk \n ");
          (WarehouseContext.instance()).changeState(1); // exit with a code 1
         }
     else if (WarehouseContext.instance().getLogin() == WarehouseContext.IsUser)

@@ -14,7 +14,7 @@ public class Managerstate extends WarehouseState {
     private Managerstate() {
         super();
         warehouse = Warehouse.instance();
-       // context = LibContext.instance();
+       // context = WarehouseContext.instance();
     }
 
     public static Managerstate instance() {
