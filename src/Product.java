@@ -91,6 +91,6 @@ public class Product implements Serializable {
       return (dueDate.getTime().toString());
   }
   public String toString() {
-    return "Name: " + name + " | Quantity: " + quantity + " | ID: " + id + " |  Wishlisted By: " + wishlistedBy;
+    return "Name: " + name + " | Quantity: " + quantity + " | ID: " + id + " |  Wishlisted By: " + wishlistedBy.getName() + "\n";
   }
 }
