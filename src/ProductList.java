@@ -40,6 +40,7 @@ public class ProductList implements Serializable {
     products.add(product);
     return true;
   }
+
   public Iterator getProducts() {
     return products.iterator();
   }
@@ -69,5 +70,7 @@ public class ProductList implements Serializable {
       cnfe.printStackTrace();
     }
   }
-  public String toString() {return products.toString();}
+  public String toString() {
+    return products.toString();
+  }
 }

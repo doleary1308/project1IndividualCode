@@ -17,6 +17,9 @@ public class Client implements Serializable {
     this.phone = phone;
     id = CLIENT_STRING + (ClientIdServer.instance()).getId();
   }
+
+
+
   public boolean issue(Product product) {
     if (productsInWishlist.add(product)) {
       invoices.add(new Invoice("Product issued ", product.getName()));

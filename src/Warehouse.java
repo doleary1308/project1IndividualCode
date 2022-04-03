@@ -137,7 +137,6 @@ public class Warehouse implements Serializable {
     }
   }
 
-  public  void showProductList() { System.out.print(productList.toString() + "\n");}
 
   public int removeProduct(String productId) {
     Product product = productList.search(productId);
@@ -194,7 +193,7 @@ public class Warehouse implements Serializable {
       return null;
     }
   }
-  public static boolean save() {
+  public static  boolean save() {
     try {
       FileOutputStream file = new FileOutputStream("WarehouseData");
       ObjectOutputStream output = new ObjectOutputStream(file);
@@ -227,6 +226,13 @@ public class Warehouse implements Serializable {
     } catch(Exception e) {
       e.printStackTrace();
     }
+  }
+  public  void showProductList() { System.out.print(productList.toString() + "\n");}
+  public void showClientDetails(){        //added method may show too many details maybe supposed to be in clientstate?
+
+    String clientID=WarehouseContext.instance().getUser();
+    clientList.search(clientID);
+    System.out.println(clientList.search(clientID));
   }
   public String toString() {
     return productList + "\n" + clientList;

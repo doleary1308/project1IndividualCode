@@ -11,7 +11,7 @@ public class Loginstate extends WarehouseState {
   private static Loginstate instance;
   private Loginstate() {
       super();
-     // context = LibContext.instance();
+    //  context = WarehouseContext.instance();
   }
 
   public static Loginstate instance() {
@@ -67,22 +67,22 @@ public class Loginstate extends WarehouseState {
   }
 
   private void user(){
-    String userID = getToken("Please input the Client id: ");
+    String userID = getToken("Please input the user id: ");
     if (Warehouse.instance().searchMembership(userID) != null){
       (WarehouseContext.instance()).setLogin(WarehouseContext.IsUser);
       (WarehouseContext.instance()).setUser(userID);
       (WarehouseContext.instance()).changeState(1);
     }
     else 
-      System.out.println("Invalid Client ID.");
+      System.out.println("Invalid user id.");
   } 
 
   public void process() {
     int command;
-    System.out.println( "Input 0 to login as Clerk\n"+
-                        "Input 1 to login as Client\n" +
-                        "Input 2 to login as Manager\n"+
-                        "Input 3 to exit the system\n");
+    System.out.println("Please input 0 to login as Clerk\n"+ 
+                        "input 1 to login as user\n" +
+                        "input 2 to login as manager\n"+
+                        "input 3 to exit the system\n");
     while ((command = getCommand()) != EXIT) {
 
       switch (command) {
@@ -96,9 +96,9 @@ public class Loginstate extends WarehouseState {
                                 
       }
       System.out.println("Please input 0 to login as Clerk\n"+ 
-                        "Input 1 to login as Client\n" +
-                        "Input 2 to login as Manager\n"+
-                        "Input 3 to exit the System\n");
+                        "input 1 to login as user\n" +
+                        "input 2 to login as manager\n"+
+                        "input 3 to exit the system\n");
     }
     (WarehouseContext.instance()).changeState(2);
   }

@@ -11,7 +11,8 @@ public class Clientstate extends WarehouseState {
   private static final int PLACE_WAIT = 3;
   private static final int REMOVE_WAIT = 4;
   private static final int GET_INVOICES = 5;
-  private static final int HELP = 6;
+  private static final int GET_INFO = 6;
+  private static final int HELP = 7;
   private Clientstate() {
     warehouse = Warehouse.instance();
   }
@@ -89,6 +90,7 @@ public class Clientstate extends WarehouseState {
     System.out.println(PLACE_WAIT + " to place a wait on a product");
     System.out.println(REMOVE_WAIT + " to remove a wait on a product");
     System.out.println(GET_INVOICES + " to print invoices");
+    System.out.println(GET_INFO+ "to get client info");
     System.out.println(HELP + " for help");
   }
 
@@ -185,7 +187,10 @@ public class Clientstate extends WarehouseState {
       System.out.println("\n  There are no more invoices \n" );
     }
   }
+  public void showClientDetails(){        //added method
+    warehouse.showClientDetails();
 
+  }
   public void process() {
     int command;
     help();
@@ -201,6 +206,8 @@ public class Clientstate extends WarehouseState {
         case REMOVE_WAIT:       removeWait();
                                 break;
         case GET_INVOICES:  getInvoices();
+                                break;
+        case GET_INFO:          showClientDetails();
                                 break;
         case HELP:              help();
                                 break;

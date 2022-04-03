@@ -18,7 +18,7 @@ public class Clerkstate extends WarehouseState {
   private Clerkstate() {
       super();
       warehouse = Warehouse.instance();
-      //context = LibContext.instance();
+      //context = WarehouseContext.instance();
   }
 
   public static Clerkstate instance() {
@@ -110,6 +110,7 @@ public class Clerkstate extends WarehouseState {
     }
     System.out.println(result);
   }
+
 
   public void addProductsToWarehouse() {
     Product result;
@@ -208,13 +209,13 @@ public class Clerkstate extends WarehouseState {
 
   public void usermenu()
   {
-    String userID = getToken("Please input the Client id: ");
+    String userID = getToken("Please input the user id: ");
     if (Warehouse.instance().searchMembership(userID) != null){
       (WarehouseContext.instance()).setUser(userID);
       (WarehouseContext.instance()).changeState(1);
     }
     else 
-      System.out.println("Invalid Client id.");
+      System.out.println("Invalid user id."); 
   }
 
   public void logout()
@@ -241,6 +242,8 @@ public class Clerkstate extends WarehouseState {
                                 break;
         case ADD_PRODUCTS_TO_WAREHOUSE:         addProductsToWarehouse();
                                 break;
+        case SHOW_PRODUCTS:     showProducts();
+                                break;
         case RETURN_PRODUCTS:      returnProducts(); //not sure what this is supposed to be
                                 break;
         case REMOVE_PRODUCTS:      removeProducts();
@@ -248,8 +251,6 @@ public class Clerkstate extends WarehouseState {
         case ACCEPT_SHIPMENT:      acceptShipment();
                                 break;
         case USERMENU:          usermenu();
-                                break;
-        case SHOW_PRODUCTS:     showProducts();
                                 break;
         case HELP:              help();
                                 break;
