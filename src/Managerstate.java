@@ -9,12 +9,12 @@ public class Managerstate extends WarehouseState {
     private static final int EXIT = 0;
     private static final int ADD_PRODUCTS_TO_WAREHOUSE = 1;
     private static final int ACCEPT_SHIPMENT = 2;
-    private static final int USERMENU = 3;
+    private static final int CLERKMENU = 3;
     private static final int HELP = 4;
     private Managerstate() {
         super();
         warehouse = Warehouse.instance();
-       // context = LibContext.instance();
+        context = WarehouseContext.instance();
     }
 
     public static Managerstate instance() {
@@ -83,10 +83,10 @@ public class Managerstate extends WarehouseState {
     }
 
     public void help() {
-        System.out.println("Enter a number between 0 and 12 as explained below:");
+        System.out.println("Enter a number as explained below:");
         System.out.println(EXIT + " to Exit\n");
 
-        System.out.println(USERMENU + " to  switch to the user menu");
+        System.out.println(CLERKMENU + " to switch to the clerk menu");
         System.out.println(HELP + " for help");
     }
 
@@ -122,15 +122,9 @@ public class Managerstate extends WarehouseState {
         } while (true);
     }
 
-    public void usermenu()
+    public void clerkmenu()
     {
-        String userID = getToken("Please input the user id: ");
-        if (Warehouse.instance().searchMembership(userID) != null){
-            (WarehouseContext.instance()).setUser(userID);
-            (WarehouseContext.instance()).changeState(1);         //copied over from clerkstate!!!!!!!!
-        }
-        else
-            System.out.println("Invalid user id.");
+        (WarehouseContext.instance()).changeState(0);
     }
 
     public void logout()
@@ -148,7 +142,7 @@ public class Managerstate extends WarehouseState {
                     break;
                 case ACCEPT_SHIPMENT:      acceptShipment();
                     break;
-                case USERMENU:          usermenu();
+                case CLERKMENU:          clerkmenu();
                     break;
                 case HELP:              help();
                     break;
