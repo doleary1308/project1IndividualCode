@@ -4,7 +4,8 @@ import java.io.*;
 public class Loginstate extends WarehouseState {
   private static final int CLERK_LOGIN = 0;
   private static final int USER_LOGIN = 1;
-  private static final int EXIT = 2;
+  private static final int MANAGER_LOGIN = 2;
+  private static final int EXIT = 3;            //getting around command issue
   private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));  
   private WarehouseContext context;
   private static Loginstate instance;
@@ -55,6 +56,10 @@ public class Loginstate extends WarehouseState {
     }
     return true;
   }
+  private void manager(){
+    (WarehouseContext.instance()).setLogin(WarehouseContext.IsClerk);
+    (WarehouseContext.instance()).changeState(3);
+  }
 
   private void clerk(){
     (WarehouseContext.instance()).setLogin(WarehouseContext.IsClerk);
@@ -76,7 +81,8 @@ public class Loginstate extends WarehouseState {
     int command;
     System.out.println("Please input 0 to login as Clerk\n"+ 
                         "input 1 to login as user\n" +
-                        "input 2 to exit the system\n");     
+                        "input 2 to login as manager\n"+
+                        "input 3 to exit the system\n");
     while ((command = getCommand()) != EXIT) {
 
       switch (command) {
@@ -84,12 +90,15 @@ public class Loginstate extends WarehouseState {
                                 break;
         case USER_LOGIN:        user();
                                 break;
+        case MANAGER_LOGIN:     manager();
+                                break;
         default:                System.out.println("Invalid choice");
                                 
       }
       System.out.println("Please input 0 to login as Clerk\n"+ 
                         "input 1 to login as user\n" +
-                        "input 2 to exit the system\n"); 
+                        "input 2 to login as manager\n"+
+                        "input 3 to exit the system\n");
     }
     (WarehouseContext.instance()).changeState(2);
   }

@@ -14,7 +14,7 @@ public class Managerstate extends WarehouseState {
     private Managerstate() {
         super();
         warehouse = Warehouse.instance();
-        context = WarehouseContext.instance();
+       // context = LibContext.instance();
     }
 
     public static Managerstate instance() {
@@ -86,7 +86,7 @@ public class Managerstate extends WarehouseState {
         System.out.println("Enter a number as explained below:");
         System.out.println(EXIT + " to Exit\n");
 
-        System.out.println(CLERKMENU + " to switch to the clerk menu");
+        System.out.println(CLERKMENU + " to  switch to the user menu");
         System.out.println(HELP + " for help");
     }
 
@@ -124,12 +124,14 @@ public class Managerstate extends WarehouseState {
 
     public void clerkmenu()
     {
-        (WarehouseContext.instance()).changeState(0);
+
+            (WarehouseContext.instance()).changeState(0);         //copied over from clerkstate!!!!!!!!
+
     }
 
     public void logout()
     {
-        (WarehouseContext.instance()).changeState(0); // exit with a code 0
+        (WarehouseContext.instance()).changeState(3); // exit with a code 0     //I think its 2
     }
 
 

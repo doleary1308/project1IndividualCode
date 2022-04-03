@@ -6,12 +6,12 @@ public class Clientstate extends WarehouseState {
   private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
   private static Warehouse warehouse;
   private static final int EXIT = 0;
-  private static final int ADD_PRODUCTS_TO_WISHLIST = 3;
-  private static final int CHECK_OUT = 5;
-  private static final int PLACE_WAIT = 7;
-  private static final int REMOVE_WAIT = 8;
-  private static final int GET_INVOICES = 10;
-  private static final int HELP = 13;
+  private static final int ADD_PRODUCTS_TO_WISHLIST = 1;
+  private static final int CHECK_OUT = 2;
+  private static final int PLACE_WAIT = 3;
+  private static final int REMOVE_WAIT = 4;
+  private static final int GET_INVOICES = 5;
+  private static final int HELP = 6;
   private Clientstate() {
     warehouse = Warehouse.instance();
   }
@@ -216,11 +216,11 @@ public class Clientstate extends WarehouseState {
   public void logout()
   {
     if ((WarehouseContext.instance()).getLogin() == WarehouseContext.IsClerk)
-       { //stem.out.println(" going to clerk \n ");
+       { System.out.println(" going to clerk \n ");
          (WarehouseContext.instance()).changeState(1); // exit with a code 1
         }
     else if (WarehouseContext.instance().getLogin() == WarehouseContext.IsUser)
-       {  //stem.out.println(" going to login \n");
+       {  System.out.println(" going to login \n");
         (WarehouseContext.instance()).changeState(0); // exit with a code 2
        }
     else 
