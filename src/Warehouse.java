@@ -28,8 +28,8 @@ public class Warehouse implements Serializable {
       return warehouse;
     }
   }
-  public Product addProduct(String title, String author) {
-    Product product = new Product(title, author);
+  public Product addProduct(String title, String author, String price) {
+    Product product = new Product(title, author, price);
     if (productList.insertProduct(product)) {
       return (product);
     }

@@ -115,8 +115,9 @@ public class Clerkstate extends WarehouseState {
     Product result;
     do {
       String name = getToken("Enter name");
+      String price = getToken("Enter price");
       String quantity = getToken("Enter quantity");
-      result = warehouse.addProduct(name, quantity);
+      result = warehouse.addProduct(name, quantity, price);
       if (result != null) {
         System.out.println(result);
       } else {

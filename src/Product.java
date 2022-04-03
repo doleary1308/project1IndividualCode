@@ -6,14 +6,16 @@ public class Product implements Serializable {
   private String name;
   private String quantity;
   private String id;
+  private String price;
   private Client wishlistedBy;
   private List waits = new LinkedList();
   private Calendar dueDate;
   private static final String PRODUCT_STRING = "P";
 
-  public Product(String name, String quantity) {
+  public Product(String name, String quantity, String price) {
     this.name = name;
     this.quantity = quantity;
+    this.price = price;
     id = PRODUCT_STRING + (ProductIdServer.instance()).getId();
   }
   public boolean issue(Client client) {
@@ -91,6 +93,6 @@ public class Product implements Serializable {
       return (dueDate.getTime().toString());
   }
   public String toString() {
-    return "Name: " + name + " | Quantity: " + quantity + " | ID: " + id + " |  Wishlisted By: " + wishlistedBy.getName() + "\n";
+    return "Name: " + name + " | Quantity: " + quantity + " | ID: " + id + " |  Price: " + price + " | Wishlisted By: " + wishlistedBy.getName() + "\n";
   }
 }
