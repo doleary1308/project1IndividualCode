@@ -82,8 +82,8 @@ public class Clientstate extends WarehouseState {
   }
 
   public void help() {
-    System.out.println("Enter a number between 0 and 12 as explained below:");
-    System.out.println(EXIT + " to Exit\n");
+    System.out.println("Enter a number as explained below:");
+    System.out.println(EXIT + " to Exit");
     System.out.println(ADD_PRODUCTS_TO_WISHLIST + " to add products to a client's wishlist");
     System.out.println(CHECK_OUT + " to check out products ");
     System.out.println(PLACE_WAIT + " to place a wait on a product");
@@ -215,7 +215,8 @@ public class Clientstate extends WarehouseState {
 
   public void logout()
   {
-    if ((WarehouseContext.instance()).getLogin() == WarehouseContext.IsClerk)
+    if (/**/((WarehouseContext.instance()).getLogin() == WarehouseContext.IsClerk) ||
+            ((WarehouseContext.instance()).getLogin() == WarehouseContext.IsManager))
        { System.out.println(" going to clerk \n ");
          (WarehouseContext.instance()).changeState(1); // exit with a code 1
         }

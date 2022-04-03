@@ -57,7 +57,7 @@ public class Loginstate extends WarehouseState {
     return true;
   }
   private void manager(){
-    (WarehouseContext.instance()).setLogin(WarehouseContext.IsClerk);
+    (WarehouseContext.instance()).setLogin(WarehouseContext.IsManager);
     (WarehouseContext.instance()).changeState(3);
   }
 

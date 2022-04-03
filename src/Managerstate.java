@@ -84,9 +84,9 @@ public class Managerstate extends WarehouseState {
 
     public void help() {
         System.out.println("Enter a number as explained below:");
-        System.out.println(EXIT + " to Exit\n");
+        System.out.println(EXIT + " to Exit");
 
-        System.out.println(CLERKMENU + " to  switch to the user menu");
+        System.out.println(CLERKMENU + " to  switch to the clerk menu");
         System.out.println(HELP + " for help");
     }
 
