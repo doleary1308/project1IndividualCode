@@ -136,6 +136,9 @@ public class Warehouse implements Serializable {
       return (client.getProductsIssued());
     }
   }
+
+  public  void showProductList() { System.out.print(productList.toString() + "\n");}
+
   public int removeProduct(String productId) {
     Product product = productList.search(productId);
     if (product == null) {
@@ -191,7 +194,7 @@ public class Warehouse implements Serializable {
       return null;
     }
   }
-  public static  boolean save() {
+  public static boolean save() {
     try {
       FileOutputStream file = new FileOutputStream("WarehouseData");
       ObjectOutputStream output = new ObjectOutputStream(file);

@@ -122,6 +122,7 @@ public class Managerstate extends WarehouseState {
             }
         } while (true);
     }
+    public void showProducts() { warehouse.showProductList();}
 
     public void clerkmenu()
     {

@@ -69,7 +69,5 @@ public class ProductList implements Serializable {
       cnfe.printStackTrace();
     }
   }
-  public String toString() {
-    return products.toString();
-  }
+  public String toString() {return products.toString();}
 }
