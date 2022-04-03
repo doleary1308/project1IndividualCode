@@ -206,13 +206,13 @@ public class Clerkstate extends WarehouseState {
 
   public void usermenu()
   {
-    String userID = getToken("Please input the user id: ");
+    String userID = getToken("Please input the Client id: ");
     if (Warehouse.instance().searchMembership(userID) != null){
       (WarehouseContext.instance()).setUser(userID);
       (WarehouseContext.instance()).changeState(1);
     }
     else 
-      System.out.println("Invalid user id."); 
+      System.out.println("Invalid Client id.");
   }
 
   public void logout()

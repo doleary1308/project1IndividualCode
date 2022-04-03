@@ -85,8 +85,9 @@ public class Managerstate extends WarehouseState {
     public void help() {
         System.out.println("Enter a number as explained below:");
         System.out.println(EXIT + " to Exit");
-
-        System.out.println(CLERKMENU + " to  switch to the clerk menu");
+        System.out.println(ADD_PRODUCTS_TO_WAREHOUSE + " to add products to the warehouse");
+        System.out.println(ACCEPT_SHIPMENT + " to accept a shipment process waits");
+        System.out.println(CLERKMENU + " to switch to the clerk menu");
         System.out.println(HELP + " for help");
     }
 
@@ -125,7 +126,7 @@ public class Managerstate extends WarehouseState {
     public void clerkmenu()
     {
 
-            (WarehouseContext.instance()).changeState(0);         //copied over from clerkstate!!!!!!!!
+            (WarehouseContext.instance()).changeState(0);
 
     }
 
