@@ -14,7 +14,7 @@ public class Managerstate extends WarehouseState {
     private Managerstate() {
         super();
         warehouse = Warehouse.instance();
-       // context = LibContext.instance();
+     //  context = WarehouseContext.instance();
     }
 
     public static Managerstate instance() {
@@ -87,7 +87,7 @@ public class Managerstate extends WarehouseState {
         System.out.println(EXIT + " to Exit");
         System.out.println(ADD_PRODUCTS_TO_WAREHOUSE + " to add products to the warehouse");
         System.out.println(ACCEPT_SHIPMENT + " to accept a shipment process waits");
-        System.out.println(CLERKMENU + " to switch to the clerk menu");
+        System.out.println(CLERKMENU + " to  switch to the clerk menu");
         System.out.println(HELP + " for help");
     }
 
@@ -123,7 +123,6 @@ public class Managerstate extends WarehouseState {
             }
         } while (true);
     }
-    public void showProducts() { warehouse.showProductList();}
 
     public void clerkmenu()
     {
