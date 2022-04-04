@@ -7,7 +7,7 @@ public class Product implements Serializable {
   private String quantity;
   private String id;
   private String price;
-  private Client wishlistedBy; //Need to turn into a LinkedList() :sob:
+  private Client wishlistedBy;
   private List waits = new LinkedList();
   private Calendar dueDate;
   private static final String PRODUCT_STRING = "P";
@@ -94,6 +94,6 @@ public class Product implements Serializable {
   }
 
   public String toString() {
-    return "Name: " + name + " | Quantity: " + quantity + " | ID: " + id + " | Price: " + price + "\n"; //Need to add back wishlistedBy once fixed
+    return "Name: " + name + " | Quantity: " + quantity + " | ID: " + id + " | Price: " + price + " | Wishlisted By: " + wishlistedBy.getName() + "\n";
   }
 }
