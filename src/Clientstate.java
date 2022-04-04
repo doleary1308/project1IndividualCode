@@ -6,13 +6,16 @@ public class Clientstate extends WarehouseState {
   private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
   private static Warehouse warehouse;
   private static final int EXIT = 0;
-  private static final int ADD_PRODUCTS_TO_WISHLIST = 1;
-  private static final int CHECK_OUT = 2;
-  private static final int PLACE_WAIT = 3;
-  private static final int REMOVE_WAIT = 4;
-  private static final int GET_INVOICES = 5;
-  private static final int GET_INFO = 6;
-  private static final int HELP = 7;
+  private static final int RETURN_PRODUCTS = 1;
+  private static final int ADD_PRODUCTS_TO_WISHLIST = 2;
+  private static final int CHECK_OUT = 3;
+  private static final int PLACE_WAIT = 4;
+  private static final int REMOVE_WAIT = 5;
+  private static final int GET_INVOICES = 6;
+  private static final int GET_INFO = 7;
+  private static final int SHOW_WAITLIST=8;
+  private static final int SHOW_PRODUCTS = 9;
+  private static final int HELP = 10;
   private Clientstate() {
     warehouse = Warehouse.instance();
   }
@@ -85,12 +88,15 @@ public class Clientstate extends WarehouseState {
   public void help() {
     System.out.println("Enter a number as explained below:");
     System.out.println(EXIT + " to Exit");
+    System.out.println(RETURN_PRODUCTS + "to remove products from wishlist");
     System.out.println(ADD_PRODUCTS_TO_WISHLIST + " to add products to a client's wishlist");
     System.out.println(CHECK_OUT + " to check out products ");
     System.out.println(PLACE_WAIT + " to place a wait on a product");
     System.out.println(REMOVE_WAIT + " to remove a wait on a product");
     System.out.println(GET_INVOICES + " to print invoices");
-    System.out.println(GET_INFO+ "to get client info");
+    System.out.println(GET_INFO+ " to get client info");
+    System.out.println(SHOW_WAITLIST+ " to get client waitlist");
+    System.out.println(SHOW_PRODUCTS + " to show the list of products in the warehouse");
     System.out.println(HELP + " for help");
   }
 
@@ -107,6 +113,36 @@ public class Clientstate extends WarehouseState {
           System.out.println("Product could not be added");
       }
       if (!yesOrNo("Add more products?")) {
+        break;
+      }
+    } while (true);
+  }
+
+  public void returnProducts() {
+    int result;
+    do {
+      String productID = getToken("Enter product id");
+      result = warehouse.returnProduct(productID);
+      switch(result) {
+        case Warehouse.PRODUCT_NOT_FOUND:
+          System.out.println("No such Product in Warehouse");
+          break;
+        case Warehouse.PRODUCT_NOT_ISSUED:
+          System.out.println(" Product was not checked out");
+          break;
+        case Warehouse.PRODUCT_HAS_WAIT:
+          System.out.println("Product is waitlisted");
+          break;
+        case Warehouse.OPERATION_FAILED:
+          System.out.println("Product could not be returned");
+          break;
+        case Warehouse.OPERATION_COMPLETED:
+          System.out.println(" Product has been returned");
+          break;
+        default:
+          System.out.println("An error has occurred");
+      }
+      if (!yesOrNo("Return more products?")) {
         break;
       }
     } while (true);
@@ -191,12 +227,20 @@ public class Clientstate extends WarehouseState {
     warehouse.showClientDetails();
 
   }
+
+  public void showWaitlist() {
+
+    System.out.print(warehouse.showWaitlist());
+  }
+  public void showProducts() { warehouse.showProductList();}
+
   public void process() {
     int command;
     help();
     while ((command = getCommand()) != EXIT) {
       switch (command) {
-
+        case RETURN_PRODUCTS:      returnProducts(); //not sure what this is supposed to be
+                                break;
         case ADD_PRODUCTS_TO_WISHLIST:       addProductsToClientWishlist();
                                 break;
         case CHECK_OUT:       checkOut();
@@ -208,6 +252,10 @@ public class Clientstate extends WarehouseState {
         case GET_INVOICES:  getInvoices();
                                 break;
         case GET_INFO:          showClientDetails();
+                                break;
+        case SHOW_WAITLIST:     showWaitlist();
+                                break;
+        case SHOW_PRODUCTS:     showProducts();
                                 break;
         case HELP:              help();
                                 break;

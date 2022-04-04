@@ -8,13 +8,11 @@ public class Clerkstate extends WarehouseState {
   private static Clerkstate instance;
   private static final int EXIT = 0;
   private static final int ADD_CLIENT = 1;
-  private static final int ADD_PRODUCTS_TO_WAREHOUSE = 2;
+  private static final int SHOW_CLIENTS = 2;
   private static final int SHOW_PRODUCTS = 3;
-  private static final int RETURN_PRODUCTS = 4;
-  private static final int REMOVE_PRODUCTS = 5;
-  private static final int ACCEPT_SHIPMENT = 6;
-  private static final int USERMENU = 7;
-  private static final int HELP = 8;
+  //private static final int RETURN_PRODUCTS = 4;
+  private static final int USERMENU = 4;
+  private static final int HELP = 5;
   private Clerkstate() {
       super();
       warehouse = Warehouse.instance();
@@ -90,11 +88,12 @@ public class Clerkstate extends WarehouseState {
     System.out.println("Enter a number as explained below:");
     System.out.println(EXIT + " to Exit");
     System.out.println(ADD_CLIENT + " to add a client");
-    System.out.println(ADD_PRODUCTS_TO_WAREHOUSE + " to add products to warehouse");
+    System.out.println(SHOW_CLIENTS+ " show all clients");
+
     System.out.println(SHOW_PRODUCTS + " to show the list of products in the warehouse");
-    System.out.println(RETURN_PRODUCTS + " to return products");
-    System.out.println(REMOVE_PRODUCTS + " to remove products from warehouse");
-    System.out.println(ACCEPT_SHIPMENT + " to accept a shipment and process waits");
+  //  System.out.println(RETURN_PRODUCTS + " to return products");
+  //  System.out.println(REMOVE_PRODUCTS + " to remove products from warehouse");
+
     System.out.println(USERMENU + " to switch to the client menu");
     System.out.println(HELP + " for help");
   }
@@ -116,9 +115,9 @@ public class Clerkstate extends WarehouseState {
     Product result;
     do {
       String name = getToken("Enter name");
-      String price = getToken("Enter price");
       String quantity = getToken("Enter quantity");
-      result = warehouse.addProduct(name, quantity, price);
+      String price = getToken("Enter price");
+      result = warehouse.addProduct(name, quantity,price);
       if (result != null) {
         System.out.println(result);
       } else {
@@ -130,35 +129,7 @@ public class Clerkstate extends WarehouseState {
     } while (true);
   }
 
-  public void returnProducts() {
-    int result;
-    do {
-      String productID = getToken("Enter product id");
-      result = warehouse.returnProduct(productID);
-      switch(result) {
-        case Warehouse.PRODUCT_NOT_FOUND:
-          System.out.println("No such Product in Warehouse");
-          break;
-        case Warehouse.PRODUCT_NOT_ISSUED:
-          System.out.println(" Product was not checked out");
-          break;
-        case Warehouse.PRODUCT_HAS_WAIT:
-          System.out.println("Product is waitlisted");
-          break;
-        case Warehouse.OPERATION_FAILED:
-          System.out.println("Product could not be returned");
-          break;
-        case Warehouse.OPERATION_COMPLETED:
-          System.out.println(" Product has been returned");
-          break;
-        default:
-          System.out.println("An error has occurred");
-      }
-      if (!yesOrNo("Return more products?")) {
-        break;
-      }
-    } while (true);
-  }
+
 
   public void removeProducts() {
     int result;
@@ -190,22 +161,7 @@ public class Clerkstate extends WarehouseState {
     } while (true);
   }
 
-  public void acceptShipment() {
-    Client result;
-    do {
-      String productID = getToken("Enter product id");
-      result = warehouse.acceptShipment(productID);
-      if (result != null) {
-        System.out.println(result);
-      } else {
-        System.out.println("No valid waits left");
-      }
-      if (!yesOrNo("Process more products?")) {
-        break;
-      }
-    } while (true);
-  }
-
+  public void showClients(){warehouse.showCLientList();}
   public void showProducts() { warehouse.showProductList();}
 
   public void usermenu()
@@ -241,16 +197,15 @@ public class Clerkstate extends WarehouseState {
       switch (command) {
         case ADD_CLIENT:        addClient();
                                 break;
-        case ADD_PRODUCTS_TO_WAREHOUSE:         addProductsToWarehouse();
+        case SHOW_CLIENTS:        showClients();
                                 break;
+
         case SHOW_PRODUCTS:     showProducts();
                                 break;
-        case RETURN_PRODUCTS:      returnProducts(); //not sure what this is supposed to be
-                                break;
-        case REMOVE_PRODUCTS:      removeProducts();
-                                break;
-        case ACCEPT_SHIPMENT:      acceptShipment();
-                                break;
+
+        //case REMOVE_PRODUCTS:      removeProducts();
+          //                      break;
+
         case USERMENU:          usermenu();
                                 break;
         case HELP:              help();

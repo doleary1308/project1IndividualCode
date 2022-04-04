@@ -15,7 +15,7 @@ public class Product implements Serializable {
   public Product(String name, String quantity, String price) {
     this.name = name;
     this.quantity = quantity;
-    this.price = price;
+    this.price=price;
     id = PRODUCT_STRING + (ProductIdServer.instance()).getId();
   }
   public boolean issue(Client client) {
@@ -92,6 +92,7 @@ public class Product implements Serializable {
   public String getDueDate() {
       return (dueDate.getTime().toString());
   }
+
   public String toString() {
     return "Name: " + name + " | Quantity: " + quantity + " | ID: " + id + " | Price: " + price + " | Wishlisted By: " + wishlistedBy.getName() + "\n";
   }

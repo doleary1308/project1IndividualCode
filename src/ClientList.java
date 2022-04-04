@@ -58,6 +58,17 @@ public class ClientList implements Serializable {
       cnfe.printStackTrace();
     }
   }
+
+  public String clientString() {
+    String string="";
+    for (Iterator iterator = clients.iterator(); iterator.hasNext(); )
+    {
+      Client client =(Client) iterator.next();
+      string += client.clientInfoToString();
+    }
+    return string; }
+
+
   public String toString() {
     return clients.toString();
   }

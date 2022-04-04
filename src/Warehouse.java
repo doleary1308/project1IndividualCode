@@ -227,13 +227,33 @@ public class Warehouse implements Serializable {
       e.printStackTrace();
     }
   }
-  public  void showProductList() { System.out.print(productList.toString() + "\n");}
+  public void showCLientList() {System.out.print(clientList.clientString() + "\n");}  //brute foreced by making a another tostring
+
+  public void showProductList() { System.out.print(productList.toString() + "\n");}
   public void showClientDetails(){        //added method may show too many details maybe supposed to be in clientstate?
 
     String clientID=WarehouseContext.instance().getUser();
     clientList.search(clientID);
     System.out.println(clientList.search(clientID));
   }
+
+
+
+
+  public String showWaitlist(){
+    String clientID = WarehouseContext.instance().getUser();
+    Client client = clientList.search(clientID);
+    return client.showWaitlist(); }
+/*
+  public Iterator getInvoices(String clientId, Calendar date) {
+    Client client = clientList.search(clientId);
+    if (client == null) {
+      return(null);
+    }
+    return client.getInvoices(date);
+  }
+  */
+
   public String toString() {
     return productList + "\n" + clientList;
   }

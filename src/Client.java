@@ -29,7 +29,7 @@ public class Client implements Serializable {
   }
   public boolean returnProduct(Product product) {
     if ( productsInWishlist.remove(product)){
-      invoices.add(new Invoice("Product returned ", product.getName()));
+    //  invoices.add(new Invoice("Product returned ", product.getName()));
       return true;
     }
     return false;
@@ -116,6 +116,20 @@ public class Client implements Serializable {
       string += (Invoice) iterator.next();
     }
     string += "]";
+    return string;
+  }
+
+  public String showWaitlist() {
+    String string = "";
+    for (Iterator iterator = productsOnWait.iterator(); iterator.hasNext(); ) {
+      Wait wait = (Wait) iterator.next();
+      string += " " + wait.getProduct().getName() + ",\n";
+    }
+    return string;
+  }
+
+  public String clientInfoToString() {
+    String string = "Client Name: " + name + " | Address: " + address + " | ID: " + id + " | Phone: " + phone +"\n";
     return string;
   }
 }
