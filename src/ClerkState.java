@@ -237,7 +237,16 @@ public class ClerkState extends WarehouseState {
 
   public void logout()
   {
-    (WarehouseContext.instance()).changeState(0); // exit with a code 0
+    if ((WarehouseContext.instance()).getLogin() == WarehouseContext.IsManager)
+    { System.out.println(" going to manager \n ");
+      (WarehouseContext.instance()).changeState(3); // exit with a code 1
+    }
+    else if (WarehouseContext.instance().getLogin() == WarehouseContext.IsClerk)
+    {  System.out.println(" going to login \n");
+      (WarehouseContext.instance()).changeState(2); // exit with a code 2
+    }
+    else
+      (WarehouseContext.instance()).changeState(2); // exit code 2, indicates error
   }
  
 

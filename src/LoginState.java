@@ -1,20 +1,20 @@
 import java.util.*;
 import java.io.*;
-public class Loginstate extends WarehouseState {
+public class LoginState extends WarehouseState {
   private static final int CLERK_LOGIN = 0;
   private static final int USER_LOGIN = 1;
   private static final int EXIT = 2;
   private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));  
   private WarehouseContext context;
-  private static Loginstate instance;
-  private Loginstate() {
+  private static LoginState instance;
+  private LoginState() {
       super();
      // context = LibContext.instance();
   }
 
-  public static Loginstate instance() {
+  public static LoginState instance() {
     if (instance == null) {
-      instance = new Loginstate();
+      instance = new LoginState();
     }
     return instance;
   }

@@ -11,6 +11,7 @@ public class WarehouseContext {
                                       InputStreamReader(System.in));
   public static final int IsClerk = 0;
   public static final int IsUser = 1;
+  public static final int IsManager = 2;
   private WarehouseState[] states;
   private int[][] nextState;
 
@@ -72,14 +73,29 @@ public class WarehouseContext {
       warehouse = Warehouse.instance();
     }
     // set up the FSM and transition table;
-    states = new WarehouseState[3];
+    states = new WarehouseState[4];
     states[0] = ClerkState.instance();
-    //states[1] = Clientstate.instance();
-    states[2] = Loginstate.instance();
-    nextState = new int[3][3];
-    nextState[0][0] = 2;nextState[0][1] = 1;nextState[0][2] = -2;
-    nextState[1][0] = 2;nextState[1][1] = 0;nextState[1][2] = -2;
-    nextState[2][0] = 0;nextState[2][1] = 1;nextState[2][2] = -1;
+    states[1] = ClientState.instance();
+    states[2] = LoginState.instance();
+    states[3] = ManagerState.instance();
+    nextState = new int[4][4];
+    //Ct = Client
+    //Ck = Clerk
+    //Mg = Manager
+    //Lg = Login
+    //NA = Not Applicable
+    //CV = Varies by Context
+    nextState[0][0] =-2;nextState[0][1] = 1;nextState[0][2] = 2;nextState[0][3] =  3;
+    //Ck->Ck: NA          Ck->Ct: Cl          Ck->Lg: CV          Ck->Mg
+    nextState[1][0] = 2;nextState[1][1] = 0;nextState[1][2] =-2;nextState[1][3] = -2;
+    //Ct->Ck: CV          Ct->Ct: NA          Ct->Lg: CV          Ct->Mg: NA
+    nextState[2][0] = 0;nextState[2][1] = 1;nextState[2][2] =-1;nextState[2][3] =  3;
+    //Lg->Ck: Ck          Lg->Ct: Cl          Lg->Lg: NA          Lg->Mg: Mg
+    nextState[3][0] = 0;nextState[3][1] =-2;nextState[3][2] =-2;nextState[3][3] =  2;
+    //Mg->Ck: Ck          Mg->Ct: NA          Mg->Lg: CV/Lg?      Mg->Mg: NA
+    // 2nd-last result seems confused?
+    //Whatever, it works ¯\_(ツ)_/¯
+
     currentState = 2;
   }
 
