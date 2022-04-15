@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.Calendar;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 public class Warehouse implements Serializable {
   private static final long serialVersionUID = 1L;
@@ -61,7 +62,7 @@ public class Warehouse implements Serializable {
   public Product searchProducts(String productId) {
     return productList.search(productId);
   }
-  public int placeWait(String clientId, String productId) {
+  public int placeWait(String clientId, String productId/*, int quantity*/) {
     Product product = productList.search(productId);
     if (product == null) {
       return(PRODUCT_NOT_FOUND);
@@ -73,23 +74,29 @@ public class Warehouse implements Serializable {
     if (client == null) {
       return(NO_SUCH_CLIENT);
     }
-    Wait wait = new Wait(client, product);
+    Wait wait = new Wait(client, product/*, quantity*/);
     product.placeWait(wait);
     client.placeWait(wait);
     return(WAIT_PLACED);
   }
-  public Client acceptShipment(String productId) {
+  public Iterator acceptShipment(String productId, int quantityToAdd) {
     Product product = productList.search(productId);
+    LinkedList returnStatement = new LinkedList();
     if (product == null) {
       return (null);
     }
-    Wait wait = product.getNextWait();
-    if (wait == null) {
-      return (null);
-    }
-    wait.getClient().removeWait(productId);
-    wait.getProduct().removeWait(wait.getClient().getId());
-    return (wait.getClient());
+    product.stock(quantityToAdd);
+    do {
+      Wait wait = product.getNextWait();
+      if (wait == null) {
+        break;
+      }
+      wait.getClient().removeWait(productList.search(productId));
+      wait.getProduct().removeWait(wait.getClient().getId());
+      returnStatement.add(wait.getClient());
+      product.stock(-1);
+    } while(true && product.getQuantity() > 0);
+    return returnStatement.iterator();
   }
   public int removeWait(String clientId, String productId) {
     Client client = clientList.search(clientId);
@@ -100,7 +107,7 @@ public class Warehouse implements Serializable {
     if (product == null) {
       return(PRODUCT_NOT_FOUND);
     }
-    return client.removeWait(productId) && product.removeWait(clientId)? OPERATION_COMPLETED: NO_WAIT_FOUND;
+    return client.removeWait(productList.search(productId)) && product.removeWait(clientId)? OPERATION_COMPLETED: NO_WAIT_FOUND;
   }
   public void removeInvalidWaits() {
     for (Iterator catalogIterator = productList.getProducts(); catalogIterator.hasNext(); ) {
@@ -108,7 +115,7 @@ public class Warehouse implements Serializable {
         Wait wait = (Wait) iterator.next();
         if (!wait.isValid()) {
           wait.getProduct().removeWait(wait.getClient().getId());
-          wait.getClient().removeWait(wait.getProduct().getId());
+          wait.getClient().removeWait(wait.getProduct());
         }
       }
     }
@@ -116,9 +123,6 @@ public class Warehouse implements Serializable {
   public Product issueProduct(String clientId, String productId) {
     Product product = productList.search(productId);
     if (product == null) {
-      return(null);
-    }
-    if (product.notInAnyCarts()) {
       return(null);
     }
     Client client = clientList.search(clientId);
@@ -149,12 +153,21 @@ public class Warehouse implements Serializable {
     }
     return(null);
   }
-  public String getClientCartProducts(String clientId) {
-    Client client = clientList.search(clientId);
+  public String getClientCartProducts(String clientID) {
+    Client client = clientList.search(clientID);
     if (client == null) {
       return(null);
     } else {
       return (client.getProductsIssued());
+    }
+  }
+  public Iterator getClientCartData(String clientID)
+  {
+    Client client = clientList.search(clientID);
+    if (client == null) {
+      return(null);
+    } else {
+      return (client.getCartData());
     }
   }
   public Product changeProductQuantity(String clientID, String productID, int addReduce)
@@ -175,13 +188,23 @@ public class Warehouse implements Serializable {
     }
     return(product);
   }
+  public Client acceptClientPayment(String clientID, float payment)
+  {
+    Client client = clientList.search(clientID);
+    if (client == null) {
+      return(null);
+    }
+    client.addBalance(payment);
+
+    return client;
+  }
   public void printProducts()
   {
     System.out.print(productList.toString());
   }
-  public void printProductWishlist(String productID)
+  public Iterator printProductWaitlist(String productID)
   {
-    System.out.print(warehouse.productList.search(productID).getWaits());
+    return warehouse.productList.search(productID).getWaits();
   }
   public int removeProduct(String productID) {
     Product product = productList.search(productID);

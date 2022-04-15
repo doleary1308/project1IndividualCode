@@ -82,7 +82,10 @@ public class ClientState extends WarehouseState {
 
   public void help() {
     System.out.println("Enter a number as explained below:");
-    System.out.println(EXIT + " to Exit\n");
+    System.out.println(EXIT + " to Exit");
+    System.out.println(SHOW_CLIENT_DETAILS + " to view your details");
+    System.out.println(CLIENTCARTSTATE + " to view your cart and its actions");
+    System.out.println(SHOW_SITE_PRODUCTS + " to show the products available");
     System.out.println(GET_INVOICES + " to print invoices");
     System.out.println(HELP + " for help");
   }
@@ -95,13 +98,13 @@ public class ClientState extends WarehouseState {
     if (result == null) {
       System.out.println("Invalid Client ID");
     } else {
-      result.toString();
+      System.out.println(result);
     }
 
   }
   public void clientCartState()
   {
-
+    (WarehouseContext.instance()).changeState(4);
   }
 
   public void getSiteProducts()

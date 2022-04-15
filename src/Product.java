@@ -1,7 +1,7 @@
 import java.io.Serializable;
 import java.util.*;
 
-public class Product implements Serializable {
+public class Product implements Serializable,Comparable<Product>{
   private static final long serialVersionUID = 1L;
   private String name;
   private int quantity;
@@ -20,7 +20,7 @@ public class Product implements Serializable {
   }
   public boolean issue(Client client) {
     inCartOf.add(client);
-    Collections.sort(inCartOf);
+    Collections.sort(inCartOf, Comparator.comparing(Client::getId));
     /*dueDate = new GregorianCalendar();
     dueDate.setTimeInMillis(System.currentTimeMillis());
     dueDate.add(Calendar.MONTH, 1);*/
@@ -107,6 +107,10 @@ public class Product implements Serializable {
   public int getQuantity() {
     return quantity;
   }
+  public void stock(int added)
+  {
+    quantity = quantity + added;
+  }
   public String getName() {
     return name;
   }
@@ -123,9 +127,15 @@ public class Product implements Serializable {
   //public String getDueDate() {return (dueDate.getTime().toString());}
 
   public String toString() { //Implicitly check context to see how to display products
-    String returnStatement = "Name: " + name + " | ID: " + id;
+    String returnStatement = "Name: " + name + " | ID: " + id + " | Price: " + price;
     if((WarehouseContext.instance()).getLogin() == WarehouseContext.IsClerk)
     { returnStatement += " | Quantity: " + getQuantity() + " |  In Cart: " + inCartOf; }
+    returnStatement += "\n";
     return returnStatement;
+  }
+
+  @Override
+  public int compareTo(Product o) {
+    return 0;
   }
 }

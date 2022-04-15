@@ -83,11 +83,11 @@ public class ClientCartState extends WarehouseState {
 
     public void help() {
         System.out.println("Enter a number as explained below:");
-        System.out.println(EXIT + " to Exit your cart\n");
+        System.out.println(EXIT + " to Exit your cart");
         System.out.println(ADD_PRODUCTS_TO_CART + " to add products to your cart");
         System.out.println(REMOVE_PRODUCTS_FROM_CART + " to remove products from your cart");
-        System.out.println(CHANGE_QUANTITY + " to change the quantities of products your cart\n");
-        System.out.println(SHOW_CLIENT_CART + " to display the contents of your cart\n");
+        System.out.println(CHANGE_QUANTITY + " to change the quantities of products your cart");
+        System.out.println(SHOW_CLIENT_CART + " to display the contents of your cart");
         System.out.println(CHECK_OUT + " to check out products ");
         System.out.println(HELP + " for help");
     }
@@ -100,7 +100,7 @@ public class ClientCartState extends WarehouseState {
             String productID = getToken("Enter product id");
             result = warehouse.issueProduct(clientID, productID);
             if (result != null){
-                System.out.println(result.getName()+ "   " /*+ result.getDueDate()*/);
+                System.out.println("Successfully added " + result.getName() + " to cart");
             } else {
                 System.out.println("Product could not be added");
             }
@@ -151,7 +151,7 @@ public class ClientCartState extends WarehouseState {
     public void checkOut() {
         Product result;
         String clientID = WarehouseContext.instance().getUser();
-        Iterator cartProducts = warehouse.getClientCartProducts(clientID);
+        Iterator cartProducts = warehouse.getClientCartData(clientID);
         while (cartProducts.hasNext()){
             Product product = (Product)(cartProducts.next());
             if (yesOrNo(product.getName())) {
@@ -194,15 +194,6 @@ public class ClientCartState extends WarehouseState {
 
     public void logout()
     {
-        if ((WarehouseContext.instance()).getLogin() == WarehouseContext.IsClerk)
-        { //System.out.println(" going to clerk \n ");
-            (WarehouseContext.instance()).changeState(1); // exit with a code 1
-        }
-        else if (WarehouseContext.instance().getLogin() == WarehouseContext.IsUser)
-        {  //System.out.println(" going to login \n");
-            (WarehouseContext.instance()).changeState(0); // exit with a code 2
-        }
-        else
-            (WarehouseContext.instance()).changeState(2); // exit code 2, indicates error
+        (WarehouseContext.instance()).changeState(1); // exit with a code 2
     }
 }

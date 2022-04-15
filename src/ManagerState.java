@@ -83,10 +83,11 @@ public class ManagerState extends WarehouseState {
     }
 
     public void help() {
-        System.out.println("Enter a number between 0 and 12 as explained below:");
-        System.out.println(EXIT + " to Exit\n");
-
-        System.out.println(CLERKMENU + " to  switch to the clerk menu");
+        System.out.println("Enter a number as explained below:");
+        System.out.println(EXIT + " to Exit");
+        System.out.println(ADD_PRODUCTS_TO_WAREHOUSE + " to add products to the warehouse");
+        System.out.println(ACCEPT_SHIPMENT + " to accept a shipment and process associated waits");
+        System.out.println(CLERKMENU + " to switch to the clerk menu");
         System.out.println(HELP + " for help");
     }
 
@@ -108,12 +109,14 @@ public class ManagerState extends WarehouseState {
         } while (true);
     }
     public void acceptShipment() {
-        Client result;
+        Iterator result;
         do {
             String productID = getToken("Enter product id");
-            result = warehouse.acceptShipment(productID);
+            int quantity = Integer.parseInt(getToken("Enter the amount to add"));
+            result = warehouse.acceptShipment(productID, quantity);
             if (result != null) {
-                System.out.println(result);
+                System.out.println("Removed waits for: " + result);
+                System.out.println("Stock remaining for product: " + warehouse.searchProducts(productID));
             } else {
                 System.out.println("No valid waits left");
             }
@@ -121,22 +124,17 @@ public class ManagerState extends WarehouseState {
                 break;
             }
         } while (true);
+
     }
 
     public void clerkMenu()
     {
-        String userID = getToken("Please input the user id: ");
-        if (Warehouse.instance().searchMembership(userID) != null){
-            (WarehouseContext.instance()).setUser(userID);
-            (WarehouseContext.instance()).changeState(1);         //copied over from clerkstate!!!!!!!!
-        }
-        else
-            System.out.println("Invalid user id.");
+        (WarehouseContext.instance()).changeState(0);
     }
 
     public void logout()
     {
-        (WarehouseContext.instance()).changeState(0); // exit with a code 0
+        (WarehouseContext.instance()).changeState(2); // exit with a code 0
     }
 
 

@@ -10,12 +10,12 @@ public class ClerkState extends WarehouseState {
   private static final int EXIT = 0;
   private static final int ADD_CLIENT = 1;
   private static final int QUERY_CLIENTS = 2;
-  private static final int SHOW_WAREHOUSE_PRODUCTS = 3;
-  private static final int ADD_PRODUCTS_TO_WAREHOUSE = 4;
-  private static final int RETURN_PRODUCTS = 5;
+  private static final int ACCEPT_CLIENT_PAYMENT = 3;
+  private static final int SHOW_WAREHOUSE_PRODUCTS = 4;
+  private static final int ADD_PRODUCTS_TO_WAREHOUSE = 5;
   private static final int REMOVE_PRODUCTS = 6;
   private static final int SHOW_PRODUCT_WAITLIST = 7;
-  private static final int USERMENU = 8;
+  private static final int CLIENTMENU = 8;
   private static final int HELP = 9;
   private ClerkState() {
       super();
@@ -90,14 +90,15 @@ public class ClerkState extends WarehouseState {
 
   public void help() {
     System.out.println("Enter a number as explained below:");
-    System.out.println(EXIT + " to Exit\n");
+    System.out.println(EXIT + " to Exit");
     System.out.println(ADD_CLIENT + " to add a client");
     System.out.println(QUERY_CLIENTS + " to perform a client query");
+    System.out.println(ACCEPT_CLIENT_PAYMENT + " to accept a client payment");
+    System.out.println(SHOW_WAREHOUSE_PRODUCTS + " to show the products in the warehouse and their details");
     System.out.println(ADD_PRODUCTS_TO_WAREHOUSE + " to add products to warehouse");
-    System.out.println(RETURN_PRODUCTS + " to return products");
     System.out.println(REMOVE_PRODUCTS + " to remove products from warehouse");
     System.out.println(SHOW_PRODUCT_WAITLIST + " to show the waits for a specific product");
-    System.out.println(USERMENU + " to switch to the user menu");
+    System.out.println(CLIENTMENU + " to switch to the client menu");
     System.out.println(HELP + " for help");
   }
 
@@ -115,8 +116,8 @@ public class ClerkState extends WarehouseState {
 
   public void queryClients()
   {
-    System.out.println("0 to go back\n");
-    System.out.println("1 to see all clients\n");
+    System.out.println("0 to go back");
+    System.out.println("1 to see all clients");
     System.out.println("2 to see all clients with outstanding balance");
     System.out.println("3 to see all clients with no transaction activity for 6 months (180 days)");
     int value = Integer.parseInt(getToken("Enter the corresponding number for which clients you'd like to see"));
@@ -144,6 +145,17 @@ public class ClerkState extends WarehouseState {
     System.out.print(warehouse.clientsInactive());
   }
 
+  public void acceptClientPayment()
+  {
+    String clientID = getToken("Enter client ID");
+    float payment = Float.parseFloat(getToken("Enter payment amount"));
+    Client result = warehouse.acceptClientPayment(clientID, payment);
+    if(result == null)
+    { System.out.println("Payment could not be accepted"); }
+    else
+    { System.out.println("Payment accepted for: \n" + result + "\nClient's current balance is " + result.getBalance()); }
+  }
+
   public void getWareHouseProducts()
   {
     warehouse.printProducts();
@@ -152,8 +164,8 @@ public class ClerkState extends WarehouseState {
   public void addProductsToWarehouse() {
     Product result;
     do {
-      String name = getToken("Enter name");
-      int quantity = Integer.parseInt(getToken("Enter quantity"));
+      String name = getToken("Enter product name");
+      int quantity = Integer.parseInt(getToken("Enter quantity to stock"));
       float price = Float.parseFloat(getToken("Enter price per unit"));
       result = warehouse.addProduct(name, quantity, price);
       if (result != null) {
@@ -201,32 +213,13 @@ public class ClerkState extends WarehouseState {
   {
     String productID = getToken("Enter product id");
     if(warehouse.searchProducts(productID) != null){
-      warehouse.printProductWishlist(productID);
+      System.out.print(warehouse.printProductWaitlist(productID).toString());
     } else { System.out.print("Product not found"); }
-
   }
 
-  public void acceptShipment() //This is getting moved to ManagerState
+  public void clientMenu()
   {
-    Client result;
-    do {
-      String productID = getToken("Enter product id");
-      result = warehouse.acceptShipment(productID);
-      if (result != null) {
-        System.out.println(result);
-      } else {
-        System.out.println("No valid waits left");
-      }
-      if (!yesOrNo("Process more products?")) {
-        break;
-      }
-    } while (true);
-  }
-
-
-  public void usermenu()
-  {
-    String userID = getToken("Please input the user id: ");
+    String userID = getToken("Please input the client id: ");
     if (Warehouse.instance().searchMembership(userID) != null){
       (WarehouseContext.instance()).setUser(userID);
       (WarehouseContext.instance()).changeState(1);
@@ -259,6 +252,8 @@ public class ClerkState extends WarehouseState {
                                 break;
         case QUERY_CLIENTS:        queryClients();
           break;
+        case ACCEPT_CLIENT_PAYMENT:        acceptClientPayment();
+          break;
         case ADD_PRODUCTS_TO_WAREHOUSE:         addProductsToWarehouse();
                                 break;
         case SHOW_WAREHOUSE_PRODUCTS:         getWareHouseProducts();
@@ -267,7 +262,7 @@ public class ClerkState extends WarehouseState {
                                 break;
         case SHOW_PRODUCT_WAITLIST:      showProductWaitlist();
                                 break;
-        case USERMENU:          usermenu();
+        case CLIENTMENU:          clientMenu();
                                 break;
         case HELP:              help();
                                 break;

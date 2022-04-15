@@ -2,7 +2,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.*;
 
-public class Client implements Serializable {
+public class Client implements Serializable,Comparable<Client> {
   private static final long serialVersionUID = 1L;
   private String name;
   private String address;
@@ -22,8 +22,8 @@ public class Client implements Serializable {
   }
   public boolean issue(Product product) {
     if (productsInCart.add(product)) {
-      invoices.add(new Invoice("Product issued ", product.getName()));
-      Collections.sort(productsInCart);
+      //invoices.add(new Invoice("Product issued ", product.getName()));
+      Collections.sort(productsInCart, Comparator.comparing(Product::getId));
       return true;
     }
     return false;
@@ -72,6 +72,10 @@ public class Client implements Serializable {
     }
     return false;
   }
+  public void addBalance(float payment)
+  {
+    balance = balance + payment;
+  }
   public String getProductsIssued() {
     String string = "";
     Product temp = null;
@@ -87,27 +91,34 @@ public class Client implements Serializable {
       {                 //Add the last to the string, with its count
         if(temp != null)//Don't add when temp is null aka when looking at the first item
         {
-          string += " | " + temp.getName() + currentCount + "\n"; //Break line to format
+          string += " | " + temp.getName() + ": " + currentCount + "\n"; //Break line to format
           currentCount = 1;
         }
       }
-      temp = (Product) iterator.next(); //Load the current into temp, to compare to the next during next loop
+      //Load the current into temp, to compare to the next during next loop
+      temp = product;
     }
     //The above for() loop can't append the final product into the string.
     //So we need to do that manually after the loop is done iterating
-    string += " | " + temp.getName() + currentCount + "\n";
+    //Still ensure temp is not null, since temp will never get a value on client creation
+    if(temp != null){ string += " | " + temp.getName() + ": " + currentCount + "\n"; }
 
     return string;
+  }
+  public Iterator getCartData()
+  {
+    return productsInCart.iterator();
   }
   public void placeWait(Wait wait) {
     invoices.add(new Invoice("Wait Placed On: ", wait.getProduct().getName()));
     productsOnWait.add(wait);
   }
-  public boolean removeWait(String productId) {
+  public boolean removeWait(Product product) {
     for (ListIterator iterator = productsOnWait.listIterator(); iterator.hasNext(); ) {
       Wait wait = (Wait) iterator.next();
       String id = wait.getProduct().getId();
-      if (id.equals(productId)) {
+      if (id.equals(product.getId())) {
+        balance = balance - product.getPrice();
         invoices.add(new Invoice("Wait Removed From: ", wait.getProduct().getName()));
         iterator.remove();
         return true;
@@ -129,7 +140,7 @@ public class Client implements Serializable {
   {
     Calendar today = new GregorianCalendar();
     today.setTimeInMillis(System.currentTimeMillis());
-    for(int i = 180;i>0;i--)
+    for(int i = 180;i<0;i--)
     {
       today.add(Calendar.DAY_OF_YEAR,-1);
       if(getInvoices(today) != null) { return false; }
@@ -167,7 +178,7 @@ public class Client implements Serializable {
     String string = "Client Name: " + name + " | Address: " + address + " | ID: " + id + " | Phone: " + phone + " | Balance: " + balance;
     if((WarehouseContext.instance()).getLogin() == WarehouseContext.IsClerk) {
       string += getProductsIssued();
-      string += "]\n   Waits: [";
+      string += "\n   Waits: [";
       for (Iterator iterator = productsOnWait.iterator(); iterator.hasNext(); ) {
         Wait wait = (Wait) iterator.next();
         string += " " + wait.getProduct().getName();
@@ -176,8 +187,13 @@ public class Client implements Serializable {
       for (Iterator iterator = invoices.iterator(); iterator.hasNext(); ) {
         string += (Invoice) iterator.next();
       }
-      string += "]";
+      string += "]\n";
     }
     return string;
+  }
+
+  @Override
+  public int compareTo(Client o) {
+    return 0;
   }
 }
