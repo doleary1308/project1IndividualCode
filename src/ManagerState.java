@@ -1,25 +1,25 @@
 import java.util.*;
 import java.text.*;
 import java.io.*;
-public class Managerstate extends WarehouseState {
+public class ManagerState extends WarehouseState {
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private static Warehouse warehouse;
     private WarehouseContext context;
-    private static Managerstate instance;
+    private static ManagerState instance;
     private static final int EXIT = 0;
     private static final int ADD_PRODUCTS_TO_WAREHOUSE = 1;
     private static final int ACCEPT_SHIPMENT = 2;
-    private static final int USERMENU = 3;
+    private static final int CLERKMENU = 3;
     private static final int HELP = 4;
-    private Managerstate() {
+    private ManagerState() {
         super();
         warehouse = Warehouse.instance();
        // context = WarehouseContext.instance();
     }
 
-    public static Managerstate instance() {
+    public static ManagerState instance() {
         if (instance == null) {
-            instance = new Managerstate();
+            instance = new ManagerState();
         }
         return instance;
     }
@@ -86,7 +86,7 @@ public class Managerstate extends WarehouseState {
         System.out.println("Enter a number between 0 and 12 as explained below:");
         System.out.println(EXIT + " to Exit\n");
 
-        System.out.println(USERMENU + " to  switch to the user menu");
+        System.out.println(CLERKMENU + " to  switch to the clerk menu");
         System.out.println(HELP + " for help");
     }
 
@@ -94,8 +94,9 @@ public class Managerstate extends WarehouseState {
         Product result;
         do {
             String name = getToken("Enter name");
-            String quantity = getToken("Enter quantity");
-            result = warehouse.addProduct(name, quantity);
+            int quantity = Integer.parseInt(getToken("Enter quantity"));
+            float price = Float.parseFloat(getToken("Enter price per unit"));
+            result = warehouse.addProduct(name, quantity, price);
             if (result != null) {
                 System.out.println(result);
             } else {
@@ -122,7 +123,7 @@ public class Managerstate extends WarehouseState {
         } while (true);
     }
 
-    public void usermenu()
+    public void clerkMenu()
     {
         String userID = getToken("Please input the user id: ");
         if (Warehouse.instance().searchMembership(userID) != null){
@@ -148,7 +149,7 @@ public class Managerstate extends WarehouseState {
                     break;
                 case ACCEPT_SHIPMENT:      acceptShipment();
                     break;
-                case USERMENU:          usermenu();
+                case CLERKMENU:          clerkMenu();
                     break;
                 case HELP:              help();
                     break;

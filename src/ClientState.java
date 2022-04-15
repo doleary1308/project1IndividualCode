@@ -1,24 +1,23 @@
 import java.util.*;
 import java.text.*;
 import java.io.*;
-public class Clientstate extends WarehouseState {
-  private static Clientstate clientstate;
+public class ClientState extends WarehouseState {
+  private static ClientState clientstate;
   private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
   private static Warehouse warehouse;
   private static final int EXIT = 0;
-  private static final int ADD_PRODUCTS_TO_WISHLIST = 3;
-  private static final int CHECK_OUT = 5;
-  private static final int PLACE_WAIT = 7;
-  private static final int REMOVE_WAIT = 8;
-  private static final int GET_INVOICES = 10;
-  private static final int HELP = 13;
-  private Clientstate() {
+  private static final int SHOW_CLIENT_DETAILS = 1;
+  private static final int CLIENTCARTSTATE = 2;
+  private static final int SHOW_SITE_PRODUCTS = 3;
+  private static final int GET_INVOICES = 4;
+  private static final int HELP = 5;
+  private ClientState() {
     warehouse = Warehouse.instance();
   }
 
-  public static Clientstate instance() {
+  public static ClientState instance() {
     if (clientstate == null) {
-      return clientstate = new Clientstate();
+      return clientstate = new ClientState();
     } else {
       return clientstate;
     }
@@ -82,92 +81,32 @@ public class Clientstate extends WarehouseState {
   }
 
   public void help() {
-    System.out.println("Enter a number between 0 and 12 as explained below:");
+    System.out.println("Enter a number as explained below:");
     System.out.println(EXIT + " to Exit\n");
-    System.out.println(ADD_PRODUCTS_TO_WISHLIST + " to add products to a client's wishlist");
-    System.out.println(CHECK_OUT + " to check out products ");
-    System.out.println(PLACE_WAIT + " to place a wait on a product");
-    System.out.println(REMOVE_WAIT + " to remove a wait on a product");
     System.out.println(GET_INVOICES + " to print invoices");
     System.out.println(HELP + " for help");
   }
 
-
-  public void addProductsToClientWishlist() {
-    Product result;
+  public void getClientDetails()
+  {
+    Client result;
     String clientID = WarehouseContext.instance().getUser();
-    do {
-      String productID = getToken("Enter product id");
-      result = warehouse.issueProduct(clientID, productID);
-      if (result != null){
-        System.out.println(result.getName()+ "   " +  result.getDueDate());
-      } else {
-          System.out.println("Product could not be added");
-      }
-      if (!yesOrNo("Add more products?")) {
-        break;
-      }
-    } while (true);
+    result = warehouse.searchMembership(clientID);
+    if (result == null) {
+      System.out.println("Invalid Client ID");
+    } else {
+      result.toString();
+    }
+
+  }
+  public void clientCartState()
+  {
+
   }
 
-  public void checkOut() {
-    Product result;
-    String clientID = WarehouseContext.instance().getUser();
-    Iterator wishlistedProducts = warehouse.getProducts(clientID);
-    while (wishlistedProducts.hasNext()){
-      Product product = (Product)(wishlistedProducts.next());
-      if (yesOrNo(product.getName())) {
-        result = warehouse.checkOut(product.getId(), clientID);
-        if (result != null){
-          System.out.println(result.getName()+ "   " + result.getDueDate());
-        } else {
-          System.out.println("Product is not able to be checked out");
-        }
-      }
-    }
-  }
-
-
-  public void placeWait() {
-    String clientID = WarehouseContext.instance().getUser();
-    String productID = getToken("Enter product id");
-    int duration = getNumber("Enter duration of wait");
-    int result = warehouse.placeWait(clientID, productID, duration);
-    switch(result){
-      case Warehouse.PRODUCT_NOT_FOUND:
-        System.out.println("No such Product in Warehouse");
-        break;
-      case Warehouse.PRODUCT_NOT_ISSUED:
-        System.out.println("Product is not in a wishlist");
-        break;
-      case Warehouse.NO_SUCH_CLIENT:
-        System.out.println("Not a valid client ID");
-        break;
-      case Warehouse.WAIT_PLACED:
-        System.out.println("A wait has been placed");
-        break;
-      default:
-        System.out.println("An error has occurred");
-    }
-  }
-
-  public void removeWait() {
-    String clientID = WarehouseContext.instance().getUser();
-    String productID = getToken("Enter product id");
-    int result = warehouse.removeWait(clientID, productID);
-    switch(result){
-      case Warehouse.PRODUCT_NOT_FOUND:
-        System.out.println("No such Product in Warehouse");
-        break;
-      case Warehouse.NO_SUCH_CLIENT:
-        System.out.println("Not a valid client ID");
-        break;
-      case Warehouse.OPERATION_COMPLETED:
-        System.out.println("The wait has been removed");
-        break;
-      default:
-        System.out.println("An error has occurred");
-    }
+  public void getSiteProducts()
+  {
+    warehouse.printProducts();
   }
 
   public void getInvoices() {
@@ -192,14 +131,12 @@ public class Clientstate extends WarehouseState {
     while ((command = getCommand()) != EXIT) {
       switch (command) {
 
-        case ADD_PRODUCTS_TO_WISHLIST:       addProductsToClientWishlist();
-                                break;
-        case CHECK_OUT:       checkOut();
-                                break;
-        case PLACE_WAIT:        placeWait();
-                                break;
-        case REMOVE_WAIT:       removeWait();
-                                break;
+        case SHOW_CLIENT_DETAILS:  getClientDetails();
+          break;
+        case CLIENTCARTSTATE:  clientCartState();
+          break;
+        case SHOW_SITE_PRODUCTS:  getSiteProducts();
+          break;
         case GET_INVOICES:  getInvoices();
                                 break;
         case HELP:              help();

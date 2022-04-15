@@ -28,6 +28,28 @@ public class ClientList implements Serializable {
     }
     return null;
   }
+  public String clientsOutstanding()
+  {
+    String listOfOutstanding = "";
+    for (Iterator iterator = clients.iterator(); iterator.hasNext(); ) {
+      Client client = (Client) iterator.next();
+      if (client.getBalance() < 0) {
+        listOfOutstanding += client.toString();
+      }
+    }
+    return listOfOutstanding;
+  }
+  public String clientsInactive()
+  {
+    String listOfInactive = "";
+    for (Iterator iterator = clients.iterator(); iterator.hasNext(); ) {
+      Client client = (Client) iterator.next();
+      if (client.isInactive()) {
+        listOfInactive += client.toString();
+      }
+    }
+    return listOfInactive;
+  }
   public boolean insertClient(Client client) {
     clients.add(client);
     return true;

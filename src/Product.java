@@ -4,40 +4,44 @@ import java.util.*;
 public class Product implements Serializable {
   private static final long serialVersionUID = 1L;
   private String name;
-  private String quantity;
+  private int quantity;
   private String id;
-  private Client wishlistedBy;
+  private float price;
+  private List inCartOf = new LinkedList();
   private List waits = new LinkedList();
-  private Calendar dueDate;
+  //private Calendar dueDate;  ///Pretty sure this is unnecessary
   private static final String PRODUCT_STRING = "P";
 
-  public Product(String name, String quantity) {
+  public Product(String name, int quantity, float price) {
     this.name = name;
     this.quantity = quantity;
+    this.price = price;
     id = PRODUCT_STRING + (ProductIdServer.instance()).getId();
   }
   public boolean issue(Client client) {
-    wishlistedBy = client;
-    dueDate = new GregorianCalendar();
+    inCartOf.add(client);
+    Collections.sort(inCartOf);
+    /*dueDate = new GregorianCalendar();
     dueDate.setTimeInMillis(System.currentTimeMillis());
-    dueDate.add(Calendar.MONTH, 1);
+    dueDate.add(Calendar.MONTH, 1);*/
     return true;
   }
-  public Client returnProduct() {
-    if (wishlistedBy == null) {
+  public Client returnProduct(Client client) {
+    if (inCartOf == null) {
       return null;
     } else {
-      Client wishlister = wishlistedBy;
-      wishlistedBy = null;
-      return wishlister;
+      inCartOf.remove(client);
+      return client;
     }
   }
   public boolean checkOut(Client client) {
-    if (hasWait()) {
+    if (quantity <= 0) {
       return false;
     }
-    if ((client.getId()).equals(wishlistedBy.getId())) {
-      return (issue(client));
+    if (inCartOf.contains(client) && quantity > 0) {
+      inCartOf.remove(client);
+      quantity--;
+      return true;
     }
     return false;
   }
@@ -75,7 +79,32 @@ public class Product implements Serializable {
   public Iterator getWaits() {
     return waits.iterator();
   }
-  public String getQuantity() {
+  public boolean changeClientCartQuantity(Client client, int addReduce)
+  {
+    boolean success = false;
+    if(addReduce>0) //"The client wants to add to the product quantity"
+    {
+      while (addReduce>0) {
+        if(inCartOf.add(client)) {
+          addReduce--;
+          success = true;
+        } else {return success;}
+      }
+      Collections.sort(inCartOf);
+    }
+    if(addReduce<0) //"The client wants to reduce the product quantity"
+    {
+      while (addReduce < 0) {
+        if(inCartOf.remove(client)) {
+          addReduce++;
+          success = true;
+        }
+        else {return success;}
+      }
+    }
+    return success;
+  }
+  public int getQuantity() {
     return quantity;
   }
   public String getName() {
@@ -84,13 +113,19 @@ public class Product implements Serializable {
   public String getId() {
     return id;
   }
-  public Client getWishlister() {
-    return wishlistedBy;
+  public float getPrice() {
+    return price;
   }
-  public String getDueDate() {
-      return (dueDate.getTime().toString());
+  public boolean notInAnyCarts() {
+    return inCartOf.isEmpty();
   }
-  public String toString() {
-    return "Name: " + name + " | Quantity: " + quantity + " | ID: " + id + " |  Wishlisted By: " + wishlistedBy;
+
+  //public String getDueDate() {return (dueDate.getTime().toString());}
+
+  public String toString() { //Implicitly check context to see how to display products
+    String returnStatement = "Name: " + name + " | ID: " + id;
+    if((WarehouseContext.instance()).getLogin() == WarehouseContext.IsClerk)
+    { returnStatement += " | Quantity: " + getQuantity() + " |  In Cart: " + inCartOf; }
+    return returnStatement;
   }
 }

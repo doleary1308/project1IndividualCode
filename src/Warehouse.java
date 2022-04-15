@@ -28,8 +28,8 @@ public class Warehouse implements Serializable {
       return warehouse;
     }
   }
-  public Product addProduct(String title, String author) {
-    Product product = new Product(title, author);
+  public Product addProduct(String name, int quantity, float price) {
+    Product product = new Product(name, quantity, price);
     if (productList.insertProduct(product)) {
       return (product);
     }
@@ -42,25 +42,41 @@ public class Warehouse implements Serializable {
     }
     return null;
   }
-  public int placeWait(String clientId, String productId, int duration) {
+  public Client searchMembership(String clientId) {
+    return clientList.search(clientId);
+  }
+  public void printClients()
+  {
+    System.out.print(clientList.toString());
+  }
+  public String clientsOutstanding()
+  {
+    return clientList.clientsOutstanding();
+  }
+  public String clientsInactive()
+  {
+    return clientList.clientsInactive();
+  }
+
+  public Product searchProducts(String productId) {
+    return productList.search(productId);
+  }
+  public int placeWait(String clientId, String productId) {
     Product product = productList.search(productId);
     if (product == null) {
       return(PRODUCT_NOT_FOUND);
     }
-    if (product.getWishlister() == null) {
+    if (product.notInAnyCarts()) {
       return(PRODUCT_NOT_ISSUED);
     }
     Client client = clientList.search(clientId);
     if (client == null) {
       return(NO_SUCH_CLIENT);
     }
-    Wait wait = new Wait(client, product, duration);
+    Wait wait = new Wait(client, product);
     product.placeWait(wait);
     client.placeWait(wait);
     return(WAIT_PLACED);
-  }
-  public Client searchMembership(String clientId) {
-    return clientList.search(clientId);
   }
   public Client acceptShipment(String productId) {
     Product product = productList.search(productId);
@@ -102,7 +118,7 @@ public class Warehouse implements Serializable {
     if (product == null) {
       return(null);
     }
-    if (product.getWishlister() != null) {
+    if (product.notInAnyCarts()) {
       return(null);
     }
     Client client = clientList.search(clientId);
@@ -123,12 +139,17 @@ public class Warehouse implements Serializable {
     if (client == null) {
       return(null);
     }
-    if ((product.checkOut(client) && client.checkOut(product))) {
+    boolean ableToSell;
+    if(!(product.checkOut(client))) {
+      placeWait(clientId, productId);
+      ableToSell = true;
+    } else {ableToSell = false;}
+    if (ableToSell && client.checkOut(product)) {
       return(product);
     }
     return(null);
   }
-  public Iterator getProducts(String clientId) {
+  public String getClientCartProducts(String clientId) {
     Client client = clientList.search(clientId);
     if (client == null) {
       return(null);
@@ -136,28 +157,55 @@ public class Warehouse implements Serializable {
       return (client.getProductsIssued());
     }
   }
-  public int removeProduct(String productId) {
-    Product product = productList.search(productId);
+  public Product changeProductQuantity(String clientID, String productID, int addReduce)
+  {
+    Product product = productList.search(productID);
+    if (product == null) {
+      return(null);
+    }
+    if (product.notInAnyCarts()) {
+      return(null);
+    }
+    Client client = clientList.search(clientID);
+    if (client == null) {
+      return(null);
+    }
+    if (!(product.changeClientCartQuantity(client, addReduce) && client.changeQuantity(product, addReduce))) {
+      return null;
+    }
+    return(product);
+  }
+  public void printProducts()
+  {
+    System.out.print(productList.toString());
+  }
+  public void printProductWishlist(String productID)
+  {
+    System.out.print(warehouse.productList.search(productID).getWaits());
+  }
+  public int removeProduct(String productID) {
+    Product product = productList.search(productID);
     if (product == null) {
       return(PRODUCT_NOT_FOUND);
     }
     if (product.hasWait()) {
       return(PRODUCT_HAS_WAIT);
     }
-    if ( product.getWishlister() != null) {
+    if ( product.notInAnyCarts()) {
       return(PRODUCT_ISSUED);
     }
-    if (productList.removeProduct(productId)) {
+    if (productList.removeProduct(productID)) {
       return (OPERATION_COMPLETED);
     }
     return (OPERATION_FAILED);
   }
-  public int returnProduct(String productId) {
-    Product product = productList.search(productId);
+  public int returnProduct(String clientID, String productID) {
+    Product product = productList.search(productID);
     if (product == null) {
       return(PRODUCT_NOT_FOUND);
     }
-    Client client = product.returnProduct();
+    Client client = clientList.search(clientID);
+    product.returnProduct(client);
     if (client == null) {
       return(PRODUCT_NOT_ISSUED);
     }

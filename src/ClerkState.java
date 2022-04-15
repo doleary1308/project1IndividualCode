@@ -2,28 +2,30 @@
 import java.util.*;
 import java.text.*;
 import java.io.*;
-public class Clerkstate extends WarehouseState {
+public class ClerkState extends WarehouseState {
   private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
   private static Warehouse warehouse;
   private WarehouseContext context;
-  private static Clerkstate instance;
+  private static ClerkState instance;
   private static final int EXIT = 0;
   private static final int ADD_CLIENT = 1;
-  private static final int ADD_PRODUCTS_TO_WAREHOUSE = 2;
-  private static final int RETURN_PRODUCTS = 3;
-  private static final int REMOVE_PRODUCTS = 4;
-  private static final int ACCEPT_SHIPMENT = 5;
-  private static final int USERMENU = 6;
-  private static final int HELP = 7;
-  private Clerkstate() {
+  private static final int QUERY_CLIENTS = 2;
+  private static final int SHOW_WAREHOUSE_PRODUCTS = 3;
+  private static final int ADD_PRODUCTS_TO_WAREHOUSE = 4;
+  private static final int RETURN_PRODUCTS = 5;
+  private static final int REMOVE_PRODUCTS = 6;
+  private static final int SHOW_PRODUCT_WAITLIST = 7;
+  private static final int USERMENU = 8;
+  private static final int HELP = 9;
+  private ClerkState() {
       super();
       warehouse = Warehouse.instance();
       //context = LibContext.instance();
   }
 
-  public static Clerkstate instance() {
+  public static ClerkState instance() {
     if (instance == null) {
-      instance = new Clerkstate();
+      instance = new ClerkState();
     }
     return instance;
   }
@@ -90,10 +92,11 @@ public class Clerkstate extends WarehouseState {
     System.out.println("Enter a number as explained below:");
     System.out.println(EXIT + " to Exit\n");
     System.out.println(ADD_CLIENT + " to add a client");
+    System.out.println(QUERY_CLIENTS + " to perform a client query");
     System.out.println(ADD_PRODUCTS_TO_WAREHOUSE + " to add products to warehouse");
     System.out.println(RETURN_PRODUCTS + " to return products");
     System.out.println(REMOVE_PRODUCTS + " to remove products from warehouse");
-    System.out.println(ACCEPT_SHIPMENT + " to accept a shipment and process waits");
+    System.out.println(SHOW_PRODUCT_WAITLIST + " to show the waits for a specific product");
     System.out.println(USERMENU + " to switch to the user menu");
     System.out.println(HELP + " for help");
   }
@@ -110,49 +113,55 @@ public class Clerkstate extends WarehouseState {
     System.out.println(result);
   }
 
+  public void queryClients()
+  {
+    System.out.println("0 to go back\n");
+    System.out.println("1 to see all clients\n");
+    System.out.println("2 to see all clients with outstanding balance");
+    System.out.println("3 to see all clients with no transaction activity for 6 months (180 days)");
+    int value = Integer.parseInt(getToken("Enter the corresponding number for which clients you'd like to see"));
+    switch(value){
+      case 0: System.out.print("Going back"); break;
+      case 1: queryAll(); break;
+      case 2: queryOutstanding(); break;
+      case 3: queryInactive(); break;
+      default: System.out.print("Invalid entry; Going back");
+    }
+  }
+
+  public void queryAll()
+  {
+    warehouse.printClients();
+  }
+
+  public void queryOutstanding()
+  {
+    System.out.print(warehouse.clientsOutstanding());
+  }
+
+  public void queryInactive()
+  {
+    System.out.print(warehouse.clientsInactive());
+  }
+
+  public void getWareHouseProducts()
+  {
+    warehouse.printProducts();
+  }
 
   public void addProductsToWarehouse() {
     Product result;
     do {
       String name = getToken("Enter name");
-      String quantity = getToken("Enter quantity");
-      result = warehouse.addProduct(name, quantity);
+      int quantity = Integer.parseInt(getToken("Enter quantity"));
+      float price = Float.parseFloat(getToken("Enter price per unit"));
+      result = warehouse.addProduct(name, quantity, price);
       if (result != null) {
         System.out.println(result);
       } else {
         System.out.println("Product could not be added");
       }
       if (!yesOrNo("Add more products?")) {
-        break;
-      }
-    } while (true);
-  }
-
-  public void returnProducts() {
-    int result;
-    do {
-      String productID = getToken("Enter product id");
-      result = warehouse.returnProduct(productID);
-      switch(result) {
-        case Warehouse.PRODUCT_NOT_FOUND:
-          System.out.println("No such Product in Warehouse");
-          break;
-        case Warehouse.PRODUCT_NOT_ISSUED:
-          System.out.println(" Product was not checked out");
-          break;
-        case Warehouse.PRODUCT_HAS_WAIT:
-          System.out.println("Product is waitlisted");
-          break;
-        case Warehouse.OPERATION_FAILED:
-          System.out.println("Product could not be returned");
-          break;
-        case Warehouse.OPERATION_COMPLETED:
-          System.out.println(" Product has been returned");
-          break;
-        default:
-          System.out.println("An error has occurred");
-      }
-      if (!yesOrNo("Return more products?")) {
         break;
       }
     } while (true);
@@ -168,7 +177,7 @@ public class Clerkstate extends WarehouseState {
           System.out.println("No such Product in Warehouse");
           break;
         case Warehouse.PRODUCT_ISSUED:
-          System.out.println("Product is currently in a wishlist");
+          System.out.println("Product is currently in a cart");
           break;
         case Warehouse.PRODUCT_HAS_WAIT:
           System.out.println("Product is waitlisted");
@@ -188,7 +197,17 @@ public class Clerkstate extends WarehouseState {
     } while (true);
   }
 
-  public void acceptShipment() {
+  public void showProductWaitlist()
+  {
+    String productID = getToken("Enter product id");
+    if(warehouse.searchProducts(productID) != null){
+      warehouse.printProductWishlist(productID);
+    } else { System.out.print("Product not found"); }
+
+  }
+
+  public void acceptShipment() //This is getting moved to ManagerState
+  {
     Client result;
     do {
       String productID = getToken("Enter product id");
@@ -229,13 +248,15 @@ public class Clerkstate extends WarehouseState {
       switch (command) {
         case ADD_CLIENT:        addClient();
                                 break;
+        case QUERY_CLIENTS:        queryClients();
+          break;
         case ADD_PRODUCTS_TO_WAREHOUSE:         addProductsToWarehouse();
                                 break;
-        case RETURN_PRODUCTS:      returnProducts(); //not sure what this is supposed to be
-                                break;
+        case SHOW_WAREHOUSE_PRODUCTS:         getWareHouseProducts();
+          break;
         case REMOVE_PRODUCTS:      removeProducts();
                                 break;
-        case ACCEPT_SHIPMENT:      acceptShipment();
+        case SHOW_PRODUCT_WAITLIST:      showProductWaitlist();
                                 break;
         case USERMENU:          usermenu();
                                 break;

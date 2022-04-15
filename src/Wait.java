@@ -6,12 +6,12 @@ public class Wait implements Serializable {
   private Product product;
   private Client client;
   private Calendar date;
-  public Wait(Client client, Product product, int duration) {
+  public Wait(Client client, Product product) {
     this.product = product;
     this.client = client;
-    date = new GregorianCalendar();
+    /*date = new GregorianCalendar();
     date.setTimeInMillis(System.currentTimeMillis());
-    date.add(Calendar.DATE, duration);
+    date.add(Calendar.DATE, duration);*/
   }
   public Client getClient() {
     return client;

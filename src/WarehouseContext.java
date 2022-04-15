@@ -1,5 +1,4 @@
 import java.util.*;
-import java.text.*;
 import java.io.*;
 public class WarehouseContext {
   
@@ -74,7 +73,7 @@ public class WarehouseContext {
     }
     // set up the FSM and transition table;
     states = new WarehouseState[3];
-    states[0] = Clerkstate.instance();
+    states[0] = ClerkState.instance();
     //states[1] = Clientstate.instance();
     states[2] = Loginstate.instance();
     nextState = new int[3][3];

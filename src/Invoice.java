@@ -27,6 +27,7 @@ public class Invoice implements Serializable {
   public String getDate() {
     return date.get(Calendar.MONTH) + "/" + date.get(Calendar.DATE) + "/" + date.get(Calendar.YEAR);
   }
+  public Calendar getDateData() { return date; }
   public String toString(){
     return (type + "   " + name);
   }
