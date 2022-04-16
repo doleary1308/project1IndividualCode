@@ -157,7 +157,7 @@ public class ClientCartState extends WarehouseState {
             if (yesOrNo(product.getName())) {
                 result = warehouse.checkOut(product.getId(), clientID);
                 if (result != null){
-                    System.out.println(result.getName()+ "   " /*+ result.getDueDate()*/);
+                    System.out.println("Successfully checked out " + result.getName());
                 } else {
                     System.out.println("Product is not able to be checked out");
                 }

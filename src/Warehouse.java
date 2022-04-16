@@ -137,17 +137,19 @@ public class Warehouse implements Serializable {
   public Product checkOut(String productId, String clientId) {
     Product product = productList.search(productId);
     if (product == null) {
+      /**/System.out.print("Check: product == null");
       return(null);
     }
     Client client = clientList.search(clientId);
     if (client == null) {
+      /**/System.out.print("Check: client == null");
       return(null);
     }
     boolean ableToSell;
     if(!(product.checkOut(client))) {
       placeWait(clientId, productId);
-      ableToSell = true;
-    } else {ableToSell = false;}
+      ableToSell = false;
+    } else {ableToSell = true;}
     if (ableToSell && client.checkOut(product)) {
       return(product);
     }
@@ -202,9 +204,9 @@ public class Warehouse implements Serializable {
   {
     System.out.print(productList.toString());
   }
-  public Iterator printProductWaitlist(String productID)
+  public String printProductWaitlist(String productID)
   {
-    return warehouse.productList.search(productID).getWaits();
+    return warehouse.productList.search(productID).printWaits();
   }
   public int removeProduct(String productID) {
     Product product = productList.search(productID);

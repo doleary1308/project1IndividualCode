@@ -79,20 +79,29 @@ public class Product implements Serializable,Comparable<Product>{
   public Iterator getWaits() {
     return waits.iterator();
   }
+  public String printWaits() {
+    String returnStatement = "";
+    for (Iterator iterator = waits.iterator(); iterator.hasNext(); ) {
+      Wait wait = (Wait) iterator.next();
+      returnStatement += " " + wait.getProduct().getName();
+    }
+    returnStatement += "\n";
+
+    return returnStatement;
+  }
   public boolean changeClientCartQuantity(Client client, int addReduce)
   {
     boolean success = false;
-    if(addReduce>0) //"The client wants to add to the product quantity"
+    if(addReduce>0) //The client wants to add to the product quantity
     {
       while (addReduce>0) {
-        if(inCartOf.add(client)) {
+        if(issue(client)) {
           addReduce--;
           success = true;
         } else {return success;}
       }
-      Collections.sort(inCartOf);
     }
-    if(addReduce<0) //"The client wants to reduce the product quantity"
+    if(addReduce<0) //The client wants to reduce the product quantity
     {
       while (addReduce < 0) {
         if(inCartOf.remove(client)) {
@@ -129,7 +138,7 @@ public class Product implements Serializable,Comparable<Product>{
   public String toString() { //Implicitly check context to see how to display products
     String returnStatement = "Name: " + name + " | ID: " + id + " | Price: " + price;
     if((WarehouseContext.instance()).getLogin() == WarehouseContext.IsClerk)
-    { returnStatement += " | Quantity: " + getQuantity() + " |  In Cart: " + inCartOf; }
+    { returnStatement += " | Quantity: " + getQuantity() /*+ " |  In Cart: " + inCartOf*/; } //Too big, dumb text wall
     returnStatement += "\n";
     return returnStatement;
   }

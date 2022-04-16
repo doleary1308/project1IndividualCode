@@ -7,7 +7,7 @@ public class Wait implements Serializable {
   private Client client;
   private Calendar date;
   private int quantity;
-  public Wait(Client client, Product product/*, int quanitity*/) {
+  public Wait(Client client, Product product/*, int quantity*/) {
     this.product = product;
     this.client = client;
     //this.quantity = quantity;
@@ -26,6 +26,9 @@ public class Wait implements Serializable {
   }
   public boolean isValid(){
     return (System.currentTimeMillis() < date.getTimeInMillis());
+  }
+  public String toString() { //Implicitly check context to see how to display products
+    return product + " waitlisted by " + client + " on " + date + "\n";
   }
 }
 

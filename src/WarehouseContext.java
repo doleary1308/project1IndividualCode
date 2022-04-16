@@ -73,30 +73,34 @@ public class WarehouseContext {
       warehouse = Warehouse.instance();
     }
     // set up the FSM and transition table;
-    states = new WarehouseState[5];
+    states = new WarehouseState[6];
     states[0] = ClerkState.instance();
     states[1] = ClientState.instance();
     states[2] = LoginState.instance();
     states[3] = ManagerState.instance();
     states[4] = ClientCartState.instance();
-    nextState = new int[5][5];
+    states[5] = ClerkQueryState.instance();
+    nextState = new int[6][6];
     //Ct = Client
     //Ck = Clerk
     //Mg = Manager
     //Lg = Login
     //Cc = Client Cart
+    //Cq = Clerk Query
     //NA = Not Applicable
     //CV = Varies by Context
-    nextState[0][0] =-2;nextState[0][1] = 1;nextState[0][2] = 2;nextState[0][3] = 3;nextState[0][4] =-2;
-    //Ck->Ck: NA          Ck->Ct: Cl          Ck->Lg: CV          Ck->Mg              Ck->Cc: NA
-    nextState[1][0] = 2;nextState[1][1] = 0;nextState[1][2] =-2;nextState[1][3] =-2;nextState[1][4] = 4;
-    //Ct->Ck: CV          Ct->Ct: NA          Ct->Lg: CV          Ct->Mg: NA          Ct->Cc: Cc
-    nextState[2][0] = 0;nextState[2][1] = 1;nextState[2][2] =-1;nextState[2][3] = 3;nextState[2][4] =-2;
-    //Lg->Ck: Ck          Lg->Ct: Cl          Lg->Lg: NA          Lg->Mg: Mg          Lg->Cc: NA
-    nextState[3][0] = 0;nextState[3][1] =-2;nextState[3][2] = 2;nextState[3][3] = 2;nextState[3][4] =-2;
-    //Mg->Ck: Ck          Mg->Ct: NA          Mg->Lg: CV/Lg?      Mg->Mg: NA          Mg->Cc: NA
-    nextState[4][0] =-2;nextState[4][1] = 1;nextState[4][2] = 2;nextState[4][3] =-2;nextState[4][4] =-2;
-    //Cc->Ck: NA          Cc->Ct: Ct          Cc->Lg: NA          Cc->Mg: NA          Cc->Cc: NA
+    nextState[0][0] =-2;nextState[0][1] = 1;nextState[0][2] = 2;nextState[0][3] = 3;nextState[0][4] =-2;nextState[0][5] = 5;
+    //Ck->Ck: NA          Ck->Ct: Cl          Ck->Lg: CV          Ck->Mg              Ck->Cc: NA          Ck->Cq: Cq
+    nextState[1][0] = 2;nextState[1][1] = 0;nextState[1][2] =-2;nextState[1][3] =-2;nextState[1][4] = 4;nextState[1][5] =-2;
+    //Ct->Ck: CV          Ct->Ct: NA          Ct->Lg: CV          Ct->Mg: NA          Ct->Cc: Cc          Ct->Cq: NA
+    nextState[2][0] = 0;nextState[2][1] = 1;nextState[2][2] =-1;nextState[2][3] = 3;nextState[2][4] =-2;nextState[2][5] =-2;
+    //Lg->Ck: Ck          Lg->Ct: Cl          Lg->Lg: NA          Lg->Mg: Mg          Lg->Cc: NA          Lg->Cq: NA
+    nextState[3][0] = 0;nextState[3][1] =-2;nextState[3][2] = 2;nextState[3][3] = 2;nextState[3][4] =-2;nextState[3][5] =-2;
+    //Mg->Ck: Ck          Mg->Ct: NA          Mg->Lg: CV/Lg?      Mg->Mg: NA          Mg->Cc: NA          Mg->Cq: NA
+    nextState[4][0] =-2;nextState[4][1] = 1;nextState[4][2] =-2;nextState[4][3] =-2;nextState[4][4] =-2;nextState[4][5] =-2;
+    //Cc->Ck: NA          Cc->Ct: Ct          Cc->Lg: NA          Cc->Mg: NA          Cc->Cc: NA          Cc->Cq: NA
+    nextState[5][0] = 0;nextState[5][1] = 1;nextState[5][2] =-2;nextState[5][3] =-2;nextState[5][4] =-2;nextState[5][5] =-2;
+    //Cq->Ck: Ck          Cq->Ct: NA          Cq->Lg: NA          Cq->Mg: NA          Cq->Cc: NA          Cq->Cq: NA
     // nextState[3][2] seems confused?
     //Whatever, it works ¯\_(ツ)_/¯
 

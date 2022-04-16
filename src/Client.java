@@ -177,7 +177,7 @@ public class Client implements Serializable,Comparable<Client> {
   public String toString() {
     String string = "Client Name: " + name + " | Address: " + address + " | ID: " + id + " | Phone: " + phone + " | Balance: " + balance;
     if((WarehouseContext.instance()).getLogin() == WarehouseContext.IsClerk) {
-      string += getProductsIssued();
+      string += "\nProducts in Cart: \n" + getProductsIssued();
       string += "\n   Waits: [";
       for (Iterator iterator = productsOnWait.iterator(); iterator.hasNext(); ) {
         Wait wait = (Wait) iterator.next();

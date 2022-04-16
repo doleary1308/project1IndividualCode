@@ -116,33 +116,7 @@ public class ClerkState extends WarehouseState {
 
   public void queryClients()
   {
-    System.out.println("0 to go back");
-    System.out.println("1 to see all clients");
-    System.out.println("2 to see all clients with outstanding balance");
-    System.out.println("3 to see all clients with no transaction activity for 6 months (180 days)");
-    int value = Integer.parseInt(getToken("Enter the corresponding number for which clients you'd like to see"));
-    switch(value){
-      case 0: System.out.print("Going back"); break;
-      case 1: queryAll(); break;
-      case 2: queryOutstanding(); break;
-      case 3: queryInactive(); break;
-      default: System.out.print("Invalid entry; Going back");
-    }
-  }
-
-  public void queryAll()
-  {
-    warehouse.printClients();
-  }
-
-  public void queryOutstanding()
-  {
-    System.out.print(warehouse.clientsOutstanding());
-  }
-
-  public void queryInactive()
-  {
-    System.out.print(warehouse.clientsInactive());
+    (WarehouseContext.instance()).changeState(5);
   }
 
   public void acceptClientPayment()
@@ -213,7 +187,7 @@ public class ClerkState extends WarehouseState {
   {
     String productID = getToken("Enter product id");
     if(warehouse.searchProducts(productID) != null){
-      System.out.print(warehouse.printProductWaitlist(productID).toString());
+      System.out.print(warehouse.printProductWaitlist(productID));
     } else { System.out.print("Product not found"); }
   }
 
