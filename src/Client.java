@@ -140,10 +140,17 @@ public class Client implements Serializable,Comparable<Client> {
   {
     Calendar today = new GregorianCalendar();
     today.setTimeInMillis(System.currentTimeMillis());
+    today.add(Calendar.MONTH,0);
     for(int i = 180;i<0;i--)
     {
-      today.add(Calendar.DAY_OF_YEAR,-1);
-      if(getInvoices(today) != null) { return false; }
+      today.add(Calendar.DAY_OF_YEAR,1);
+      //if(this.getInvoices(today) == null) { return false; }
+      for (Iterator iterator = invoices.iterator(); iterator.hasNext(); ) {
+        Invoice invoice = (Invoice) iterator.next();
+        if (invoice.onDate(today)) {
+          return false;
+        }
+      }
     }
     return true;
   }
@@ -161,6 +168,9 @@ public class Client implements Serializable,Comparable<Client> {
   }
   public float getBalance() {
     return balance;
+  }
+  public Iterator getInvoiceData() {
+    return invoices.iterator();
   }
   public void setName(String newName) {
     name = newName;

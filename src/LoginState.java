@@ -98,7 +98,7 @@ public class LoginState extends WarehouseState implements ActionListener {
 
     public void run() {
         //frame.setDefaultCloseOperation();
-        frame.setSize(480, 150);
+        frame.setSize(400, 80);
 
         //Creating the panel at bottom and adding components
         JPanel panel = new JPanel(); // the panel is not visible in output

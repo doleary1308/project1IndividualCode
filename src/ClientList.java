@@ -44,7 +44,7 @@ public class ClientList implements Serializable {
     String listOfInactive = "";
     for (Iterator iterator = clients.iterator(); iterator.hasNext(); ) {
       Client client = (Client) iterator.next();
-      if (client.isInactive()) {
+      if (/*client.isInactive()*/!client.getInvoiceData().hasNext()) {
         listOfInactive += client.toString();
       }
     }

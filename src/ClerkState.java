@@ -309,20 +309,24 @@ public class ClerkState extends WarehouseState implements ActionListener {
 
   public void logout() {
     if ((WarehouseContext.instance()).getLogin() == WarehouseContext.IsManager)
-    { System.out.println(" going to manager \n ");
-      frame.setVisible(false);
-      (WarehouseContext.instance()).changeState(3); // exit with a code 1
-    }
+    { managerState(); }
     else if (WarehouseContext.instance().getLogin() == WarehouseContext.IsClerk)
-    {  System.out.println(" going to login \n");
-      frame.setVisible(false);
-      (WarehouseContext.instance()).changeState(2); // exit with a code 2
-    }
+    { loginState(); }
     else
-      frame.setVisible(false);
-      (WarehouseContext.instance()).changeState(2); // exit code 2, indicates error
+    loginState(); // exit code 2, indicates error
   }
-
+  public void loginState()
+  {
+    System.out.println(" going to login \n");
+    frame.setVisible(false);
+    (WarehouseContext.instance()).changeState(2); // exit with a code 2
+  }
+  public void managerState()
+  {
+    System.out.println(" going to manager \n ");
+    frame.setVisible(false);
+    (WarehouseContext.instance()).changeState(3); // exit with a code 1
+  }
 
   public void run() {
     //frame.setDefaultCloseOperation();

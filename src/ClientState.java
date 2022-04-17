@@ -3,6 +3,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import javax.swing.JFormattedTextField.AbstractFormatter;
 import java.text.*;
 import java.io.*;
 public class ClientState extends WarehouseState implements ActionListener {
@@ -19,7 +23,7 @@ public class ClientState extends WarehouseState implements ActionListener {
     warehouse = Warehouse.instance();
   }
 
-  public JFrame frame = new JFrame("Client Menu");
+  public JDialog frame = new JDialog(/*"Client Menu"*/);
   public JTextArea ta = new JTextArea();
 
   public static ClientState instance() {
@@ -136,14 +140,34 @@ public class ClientState extends WarehouseState implements ActionListener {
     Iterator result;
     String textAreaFill = "";
     String clientID = WarehouseContext.instance().getUser();
-    Calendar date  = getDate((String)JOptionPane.showInputDialog(
+
+    int year = Integer.parseInt ((String)JOptionPane.showInputDialog(
             frame,
-            "Please input a date as mm/dd/yy",
-            "Enter Date",
+            "For which year?\n",
+            "Get Invoices",
             JOptionPane.PLAIN_MESSAGE,
             null,
             null,
             ""));
+    int month = Integer.parseInt ((String)JOptionPane.showInputDialog(
+            frame,
+            "For which month?\n",
+            "Get Invoices",
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            null,
+            ""));
+    month--;
+    if(month==0){month=12;}
+    int day = Integer.parseInt ((String)JOptionPane.showInputDialog(
+            frame,
+            "For which day?\n",
+            "Get Invoices",
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            null,
+            ""));
+    Calendar date = new GregorianCalendar(year, month, day);
     result = warehouse.getInvoices(clientID,date);
     if (result == null) {
       JOptionPane.showMessageDialog(frame,
@@ -208,18 +232,23 @@ public class ClientState extends WarehouseState implements ActionListener {
   {
     if (  ((WarehouseContext.instance()).getLogin() == WarehouseContext.IsClerk) ||
             ((WarehouseContext.instance()).getLogin() == WarehouseContext.IsManager))
-    { System.out.println(" going to clerk \n ");
-      frame.setVisible(false);
-      (WarehouseContext.instance()).changeState(1); // exit with a code 1
-    }
+    { clerkState(); }
     else if (WarehouseContext.instance().getLogin() == WarehouseContext.IsUser)
-    {  System.out.println(" going to login \n");
-      frame.setVisible(false);
-      (WarehouseContext.instance()).changeState(0); // exit with a code 2
-    }
+    { loginState(); }
     else
-      frame.setVisible(false);
-      (WarehouseContext.instance()).changeState(2); // exit code 2, indicates error
+      loginState();
+  }
+  public void loginState()
+  {
+    System.out.println(" going to login \n");
+    frame.setVisible(false);
+    (WarehouseContext.instance()).changeState(2); // exit with a code 2
+  }
+  public void clerkState()
+  {
+    System.out.println(" going to clerk \n ");
+    frame.setVisible(false);
+    (WarehouseContext.instance()).changeState(0);
   }
 
   @Override

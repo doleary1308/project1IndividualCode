@@ -123,7 +123,7 @@ public class ClerkQueryState extends WarehouseState implements ActionListener {
 
     public void run() {
         //frame.setDefaultCloseOperation();
-        frame.setSize(580, 300);
+        frame.setSize(600, 600);
 
         //Creating the panel at bottom and adding components
         JPanel panel = new JPanel(); // the panel is not visible in output
