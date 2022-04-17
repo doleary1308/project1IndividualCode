@@ -210,12 +210,12 @@ public class ClientState extends WarehouseState implements ActionListener {
             ((WarehouseContext.instance()).getLogin() == WarehouseContext.IsManager))
     { System.out.println(" going to clerk \n ");
       frame.setVisible(false);
-      (WarehouseContext.instance()).changeState(0); // exit with a code 1
+      (WarehouseContext.instance()).changeState(1); // exit with a code 1
     }
     else if (WarehouseContext.instance().getLogin() == WarehouseContext.IsUser)
     {  System.out.println(" going to login \n");
       frame.setVisible(false);
-      (WarehouseContext.instance()).changeState(2); // exit with a code 2
+      (WarehouseContext.instance()).changeState(0); // exit with a code 2
     }
     else
       frame.setVisible(false);

@@ -299,6 +299,7 @@ public class ClerkState extends WarehouseState implements ActionListener {
             "C1");
     if (Warehouse.instance().searchMembership(userID) != null){
       (WarehouseContext.instance()).setUser(userID);
+      frame.setVisible(false);
       (WarehouseContext.instance()).changeState(1);
     } else {
       JOptionPane.showMessageDialog(frame,
