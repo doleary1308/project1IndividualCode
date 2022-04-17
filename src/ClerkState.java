@@ -9,7 +9,6 @@ import java.io.*;
 public class ClerkState extends WarehouseState implements ActionListener {
   private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
   private static Warehouse warehouse;
-  private WarehouseContext context;
   private static ClerkState instance;
   private static final int EXIT = 0;
   private static final int ADD_CLIENT = 1;

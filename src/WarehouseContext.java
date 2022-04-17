@@ -91,7 +91,7 @@ public class WarehouseContext {
     //CV = Varies by Context
     nextState[0][0] =-2;nextState[0][1] = 1;nextState[0][2] = 2;nextState[0][3] = 3;nextState[0][4] =-2;nextState[0][5] = 5;
     //Ck->Ck: NA          Ck->Ct: Cl          Ck->Lg: Lg          Ck->Mg              Ck->Cc: NA          Ck->Cq: Cq
-    nextState[1][0] = 2;nextState[1][1] = 0;nextState[1][2] =-2;nextState[1][3] =-2;nextState[1][4] = 4;nextState[1][5] =-2;
+    nextState[1][0] = 0;nextState[1][1] =-2;nextState[1][2] = 2;nextState[1][3] =-2;nextState[1][4] = 4;nextState[1][5] =-2;
     //Ct->Ck: Ck          Ct->Ct: NA          Ct->Lg: Lg          Ct->Mg: NA          Ct->Cc: Cc          Ct->Cq: NA
     nextState[2][0] = 0;nextState[2][1] = 1;nextState[2][2] =-1;nextState[2][3] = 3;nextState[2][4] =-2;nextState[2][5] =-2;
     //Lg->Ck: Ck          Lg->Ct: Cl          Lg->Lg: NA          Lg->Mg: Mg          Lg->Cc: NA          Lg->Cq: NA

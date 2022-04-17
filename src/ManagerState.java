@@ -8,7 +8,6 @@ import java.io.*;
 public class ManagerState extends WarehouseState implements ActionListener {
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private static Warehouse warehouse;
-    private WarehouseContext context;
     private static ManagerState instance;
     private static final int EXIT = 0;
     private static final int ADD_PRODUCTS_TO_WAREHOUSE = 1;
