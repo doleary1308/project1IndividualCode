@@ -1,7 +1,9 @@
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.*;
 import java.text.*;
 import java.io.*;
-public class LoginState extends WarehouseState {
+public class LoginState extends WarehouseState implements ActionListener {
     private static final int CLERK_LOGIN = 0;
     private static final int CLIENT_LOGIN = 1;
     private static final int MANAGER_LOGIN = 2;
@@ -105,5 +107,10 @@ public class LoginState extends WarehouseState {
 
     public void run() {
         process();
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
     }
 }

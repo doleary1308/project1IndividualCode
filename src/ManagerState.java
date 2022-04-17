@@ -1,7 +1,9 @@
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.*;
 import java.text.*;
 import java.io.*;
-public class ManagerState extends WarehouseState {
+public class ManagerState extends WarehouseState implements ActionListener {
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private static Warehouse warehouse;
     private WarehouseContext context;
@@ -157,5 +159,10 @@ public class ManagerState extends WarehouseState {
     }
     public void run() {
         process();
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
     }
 }

@@ -1,7 +1,9 @@
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.*;
 import java.text.*;
 import java.io.*;
-public class ClientState extends WarehouseState {
+public class ClientState extends WarehouseState implements ActionListener {
   private static ClientState clientstate;
   private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
   private static Warehouse warehouse;
@@ -166,5 +168,10 @@ public class ClientState extends WarehouseState {
     }
     else
       (WarehouseContext.instance()).changeState(2); // exit code 2, indicates error
+  }
+
+  @Override
+  public void actionPerformed(ActionEvent e) {
+
   }
 }
