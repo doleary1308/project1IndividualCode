@@ -91,7 +91,7 @@ public class Client implements Serializable,Comparable<Client> {
       {                 //Add the last to the string, with its count
         if(temp != null)//Don't add when temp is null aka when looking at the first item
         {
-          string += " | " + temp.getName() + ": " + currentCount + "\n"; //Break line to format
+          string += " | " + temp.getId() + " | " + temp.getName() + ": " + currentCount + "\n"; //Break line to format
           currentCount = 1;
         }
       }
@@ -101,7 +101,7 @@ public class Client implements Serializable,Comparable<Client> {
     //The above for() loop can't append the final product into the string.
     //So we need to do that manually after the loop is done iterating
     //Still ensure temp is not null, since temp will never get a value on client creation
-    if(temp != null){ string += " | " + temp.getName() + ": " + currentCount + "\n"; }
+    if(temp != null){ string += " | " + temp.getId() + " | " + temp.getName() + ": " + currentCount + "\n"; }
 
     return string;
   }
@@ -175,7 +175,7 @@ public class Client implements Serializable,Comparable<Client> {
     return this.id.equals(id);
   }
   public String toString() {
-    String string = "Client Name: " + name + " | Address: " + address + " | ID: " + id + " | Phone: " + phone + " | Balance: " + balance;
+    String string = "\nClient Name: " + name + " | Address: " + address + " | ID: " + id + " | Phone: " + phone + " | Balance: " + balance;
     if((WarehouseContext.instance()).getLogin() == WarehouseContext.IsClerk) {
       string += "\nProducts in Cart: \n" + getProductsIssued();
       string += "\n   Waits: [";

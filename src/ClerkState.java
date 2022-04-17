@@ -1,4 +1,6 @@
 //The omnipresent Clerk
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
@@ -24,6 +26,9 @@ public class ClerkState extends WarehouseState implements ActionListener {
       warehouse = Warehouse.instance();
       //context = LibContext.instance();
   }
+
+  public JFrame frame = new JFrame("Clerk Menu");
+  public JTextArea ta = new JTextArea();
 
   public static ClerkState instance() {
     if (instance == null) {
@@ -105,153 +110,304 @@ public class ClerkState extends WarehouseState implements ActionListener {
   }
 
   public void addClient() {
-    String name = getToken("Enter member name");
-    String address = getToken("Enter address");
-    String phone = getToken("Enter phone");
+    String name = (String)JOptionPane.showInputDialog(
+            frame,
+            "Enter the client's name\n",
+            "Add Client",
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            null,
+            "");
+    String address = (String)JOptionPane.showInputDialog(
+            frame,
+            "Enter the client's address\n",
+            "Add Client",
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            null,
+            "");
+    String phone = (String)JOptionPane.showInputDialog(
+            frame,
+            "Enter the client's phone number\n",
+            "Add Client",
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            null,
+            "");
     Client result;
     result = warehouse.addClient(name, address, phone);
     if (result == null) {
-      System.out.println("Could not add member");
+      JOptionPane.showMessageDialog(frame,
+              "Could not add client",
+              "Error",
+              JOptionPane.ERROR_MESSAGE);
     }
-    System.out.println(result);
+    ta.append(String.valueOf(result) + "\n");
   }
 
   public void queryClients()
   {
+    frame.setVisible(false);
     (WarehouseContext.instance()).changeState(5);
   }
 
-  public void acceptClientPayment()
-  {
-    String clientID = getToken("Enter client ID");
-    float payment = Float.parseFloat(getToken("Enter payment amount"));
+  public void acceptClientPayment() {
+    String clientID = (String)JOptionPane.showInputDialog(
+            frame,
+            "Enter the client ID\n",
+            "Accept Payment",
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            null,
+            "C1");
+    float payment = Float.parseFloat((String) JOptionPane.showInputDialog(
+            frame,
+            "Enter the payment amount\n",
+            "Accept Payment",
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            null,
+            ""));
     Client result = warehouse.acceptClientPayment(clientID, payment);
-    if(result == null)
-    { System.out.println("Payment could not be accepted"); }
-    else
-    { System.out.println("Payment accepted for: \n" + result + "\nClient's current balance is " + result.getBalance()); }
+    if(result == null) {
+      JOptionPane.showMessageDialog(frame,
+              "Payment could not be accepted",
+              "Error",
+              JOptionPane.ERROR_MESSAGE);
+    } else {
+      JOptionPane.showMessageDialog(frame,
+              "Payment accepted for: \n" + result +
+                      "\nClient's current balance is " + result.getBalance()); }
   }
 
   public void getWareHouseProducts()
   {
-    warehouse.printProducts();
+    ta.setText(warehouse.printProducts());
   }
 
   public void addProductsToWarehouse() {
     Product result;
-    do {
-      String name = getToken("Enter product name");
-      int quantity = Integer.parseInt(getToken("Enter quantity to stock"));
-      float price = Float.parseFloat(getToken("Enter price per unit"));
-      result = warehouse.addProduct(name, quantity, price);
-      if (result != null) {
-        System.out.println(result);
-      } else {
-        System.out.println("Product could not be added");
-      }
-      if (!yesOrNo("Add more products?")) {
-        break;
-      }
-    } while (true);
+    String name = (String)JOptionPane.showInputDialog(
+            frame,
+            "Enter the product name\n",
+            "Add Product",
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            null,
+            "");
+    int quantity = Integer.parseInt((String)JOptionPane.showInputDialog(
+            frame,
+            "Enter the quantity to stock\n",
+            "Add Product",
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            null,
+            ""));
+    float price = Float.parseFloat((String)JOptionPane.showInputDialog(
+            frame,
+            "Enter the price per unit\n",
+            "Add Product",
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            null,
+            "P1"));
+    result = warehouse.addProduct(name, quantity, price);
+    if (result != null) {
+      ta.append(result + "\n");
+    } else {
+      JOptionPane.showMessageDialog(frame,
+              "Product could not be added",
+              "Error",
+              JOptionPane.ERROR_MESSAGE);
+    }
   }
 
   public void removeProducts() {
     int result;
-    do {
-      String productID = getToken("Enter product id");
-      result = warehouse.removeProduct(productID);
-      switch(result){
-        case Warehouse.PRODUCT_NOT_FOUND:
-          System.out.println("No such Product in Warehouse");
-          break;
-        case Warehouse.PRODUCT_ISSUED:
-          System.out.println("Product is currently in a cart");
-          break;
-        case Warehouse.PRODUCT_HAS_WAIT:
-          System.out.println("Product is waitlisted");
-          break;
-        case Warehouse.OPERATION_FAILED:
-          System.out.println("Product could not be removed");
-          break;
-        case Warehouse.OPERATION_COMPLETED:
-          System.out.println(" Product has been removed");
-          break;
-        default:
-          System.out.println("An error has occurred");
-      }
-      if (!yesOrNo("Remove more products?")) {
+    String productID = (String)JOptionPane.showInputDialog(
+            frame,
+            "Enter the product ID\n",
+            "Remove Product",
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            null,
+            "");
+    result = warehouse.removeProduct(productID);
+    switch(result){
+      case Warehouse.PRODUCT_NOT_FOUND:
+        JOptionPane.showMessageDialog(frame,
+                "No such Product in Warehouse",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
         break;
-      }
-    } while (true);
+      case Warehouse.PRODUCT_ISSUED:
+        JOptionPane.showMessageDialog(frame,
+                "Product is currently in a cart",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        break;
+      case Warehouse.PRODUCT_HAS_WAIT:
+        JOptionPane.showMessageDialog(frame,
+                "Product is waitlisted",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        break;
+      case Warehouse.OPERATION_FAILED:
+        JOptionPane.showMessageDialog(frame,
+                "Product could not be removed",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        break;
+      case Warehouse.OPERATION_COMPLETED:
+        JOptionPane.showMessageDialog(frame,
+                " Product has been removed");
+        break;
+      default:
+        JOptionPane.showMessageDialog(frame,
+                "An error has occurred",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+    }
   }
 
-  public void showProductWaitlist()
-  {
-    String productID = getToken("Enter product id");
+  public void showProductWaitlist() {
+    String productID = (String)JOptionPane.showInputDialog(
+            frame,
+            "Enter the product ID\n",
+            "Show Waitlist",
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            null,
+            "P1");
     if(warehouse.searchProducts(productID) != null){
-      System.out.print(warehouse.printProductWaitlist(productID));
-    } else { System.out.print("Product not found"); }
+      ta.setText(warehouse.printProductWaitlist(productID));
+    } else {
+      JOptionPane.showMessageDialog(frame,
+              "Product not found",
+              "Error",
+              JOptionPane.ERROR_MESSAGE); }
   }
 
-  public void clientMenu()
-  {
-    String userID = getToken("Please input the client id: ");
+  public void clientMenu() {
+    String userID = (String)JOptionPane.showInputDialog(
+            frame,
+            "Enter the client's ID\n",
+            "Become Client",
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            null,
+            "C1");
     if (Warehouse.instance().searchMembership(userID) != null){
       (WarehouseContext.instance()).setUser(userID);
       (WarehouseContext.instance()).changeState(1);
-    }
-    else 
-      System.out.println("Invalid user id."); 
+    } else {
+      JOptionPane.showMessageDialog(frame,
+              "Invalid client ID",
+              "Error",
+              JOptionPane.ERROR_MESSAGE); }
   }
 
-  public void logout()
-  {
+  public void logout() {
     if ((WarehouseContext.instance()).getLogin() == WarehouseContext.IsManager)
     { System.out.println(" going to manager \n ");
+      frame.setVisible(false);
       (WarehouseContext.instance()).changeState(3); // exit with a code 1
     }
     else if (WarehouseContext.instance().getLogin() == WarehouseContext.IsClerk)
     {  System.out.println(" going to login \n");
+      frame.setVisible(false);
       (WarehouseContext.instance()).changeState(2); // exit with a code 2
     }
     else
+      frame.setVisible(false);
       (WarehouseContext.instance()).changeState(2); // exit code 2, indicates error
   }
- 
 
-  public void process() {
-    int command;
-    help();
-    while ((command = getCommand()) != EXIT) {
-      switch (command) {
-        case ADD_CLIENT:        addClient();
-                                break;
-        case QUERY_CLIENTS:        queryClients();
-          break;
-        case ACCEPT_CLIENT_PAYMENT:        acceptClientPayment();
-          break;
-        case ADD_PRODUCTS_TO_WAREHOUSE:         addProductsToWarehouse();
-                                break;
-        case SHOW_WAREHOUSE_PRODUCTS:         getWareHouseProducts();
-          break;
-        case REMOVE_PRODUCTS:      removeProducts();
-                                break;
-        case SHOW_PRODUCT_WAITLIST:      showProductWaitlist();
-                                break;
-        case CLIENTMENU:          clientMenu();
-                                break;
-        case HELP:              help();
-                                break;
-      }
-    }
-    logout();
-  }
+
   public void run() {
-    process();
+    //frame.setDefaultCloseOperation();
+    frame.setSize(1100, 250);
+
+    //Creating the panel at bottom and adding components
+    JPanel panel = new JPanel(); // the panel is not visible in output
+    JButton back = new JButton("Back");
+    back.addActionListener(this);
+    back.setActionCommand(String.valueOf(EXIT));
+
+    JButton addClient = new JButton("Add a Client");
+    addClient.addActionListener(this);
+    addClient.setActionCommand(String.valueOf(ADD_CLIENT));
+
+    JButton queryClients = new JButton("Query Clients");
+    queryClients.addActionListener(this);
+    queryClients.setActionCommand(String.valueOf(QUERY_CLIENTS));
+
+    JButton acceptClientPayment = new JButton("Accept a Payment");
+    acceptClientPayment.addActionListener(this);
+    acceptClientPayment.setActionCommand(String.valueOf(ACCEPT_CLIENT_PAYMENT));
+
+    JButton addProduct = new JButton("Add a Product");
+    addProduct.addActionListener(this);
+    addProduct.setActionCommand(String.valueOf(ADD_PRODUCTS_TO_WAREHOUSE));
+
+    JButton showProducts = new JButton("Show Products");
+    showProducts.addActionListener(this);
+    showProducts.setActionCommand(String.valueOf(SHOW_WAREHOUSE_PRODUCTS));
+
+    JButton removeProduct = new JButton("Remove Products");
+    removeProduct.addActionListener(this);
+    removeProduct.setActionCommand(String.valueOf(REMOVE_PRODUCTS));
+
+    JButton showWaitlist = new JButton("Show a Waitlist");
+    showWaitlist.addActionListener(this);
+    showWaitlist.setActionCommand(String.valueOf(SHOW_PRODUCT_WAITLIST));
+
+    JButton clientMenu = new JButton("Become a Client");
+    clientMenu.addActionListener(this);
+    clientMenu.setActionCommand(String.valueOf(CLIENTMENU));
+
+    panel.add(back); // Components Added using Flow Layout
+    panel.add(addClient);
+    panel.add(queryClients);
+    panel.add(acceptClientPayment);
+    panel.add(addProduct);
+    panel.add(showProducts);
+    panel.add(removeProduct);
+    panel.add(showWaitlist);
+    panel.add(clientMenu);
+
+    //Adding Components to the frame.
+    frame.getContentPane().add(BorderLayout.SOUTH, panel);
+    //frame.getContentPane().add(BorderLayout.NORTH, mb);
+    frame.getContentPane().add(BorderLayout.CENTER, ta);
+    frame.setVisible(true);
   }
 
   @Override
-  public void actionPerformed(ActionEvent e) {
+  public void actionPerformed(ActionEvent ae) {
+    int command = Integer.parseInt(ae.getActionCommand());
+    switch (command) {
+      case EXIT:       logout();
+        break;
+      case ADD_CLIENT:        addClient();
+        break;
+      case QUERY_CLIENTS:        queryClients();
+        break;
+      case ACCEPT_CLIENT_PAYMENT:        acceptClientPayment();
+        break;
+      case ADD_PRODUCTS_TO_WAREHOUSE:         addProductsToWarehouse();
+        break;
+      case SHOW_WAREHOUSE_PRODUCTS:         getWareHouseProducts();
+        break;
+      case REMOVE_PRODUCTS:      removeProducts();
+        break;
+      case SHOW_PRODUCT_WAITLIST:      showProductWaitlist();
+        break;
+      case CLIENTMENU:          clientMenu();
+        break;
+      /*case HELP:              help();
+        break;*/
+    }
 
   }
 }

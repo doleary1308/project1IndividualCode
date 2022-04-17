@@ -1,7 +1,12 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.util.*;
 import java.text.*;
 import java.io.*;
-public class ClientCartState extends WarehouseState {
+public class ClientCartState extends WarehouseState implements ActionListener {
     private static ClientCartState clientcartstate;
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private static Warehouse warehouse;
@@ -16,7 +21,11 @@ public class ClientCartState extends WarehouseState {
         warehouse = Warehouse.instance();
     }
 
+    public JFrame frame = new JFrame("Your Cart");
+    public JTextArea ta = new JTextArea();
+
     public static ClientCartState instance() {
+
         if (clientcartstate == null) {
             return clientcartstate = new ClientCartState();
         } else {
@@ -92,60 +101,92 @@ public class ClientCartState extends WarehouseState {
         System.out.println(HELP + " for help");
     }
 
-
     public void addProductsToClientCart() {
         Product result;
         String clientID = WarehouseContext.instance().getUser();
-        do {
-            String productID = getToken("Enter product id");
-            result = warehouse.issueProduct(clientID, productID);
-            if (result != null){
-                System.out.println("Successfully added " + result.getName() + " to cart");
-            } else {
-                System.out.println("Product could not be added");
-            }
-            if (!yesOrNo("Add more products?")) {
-                break;
-            }
-        } while (true);
+        String productID = (String)JOptionPane.showInputDialog(
+                frame,
+                "Enter the product ID\n",
+                "Add Product",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                null,
+                "P1");
+        result = warehouse.issueProduct(clientID, productID);
+        if (result != null){
+            JOptionPane.showMessageDialog(frame,
+                    "Successfully added " + result.getName() + " to cart");
+        } else {
+            JOptionPane.showMessageDialog(frame,
+                    "Product could not be added",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public void removeProductsFromClientCart() {
         int result = 0;
         String clientID = WarehouseContext.instance().getUser();
-        do {
-            String productID = getToken("Enter product id");
-            result = warehouse.returnProduct(clientID, productID);
-            if (result != 0){
-                System.out.println(" Successfully removed the product");
-            } else {
-                System.out.println("Product could not be removed");
-            }
-            if (!yesOrNo("Remove more products?")) {
-                break;
-            }
-        } while (true);
-    }
-
-    public void changeQuantity()
-    {
-        Product result;
-        String clientID = WarehouseContext.instance().getUser();
-        String productID = getToken("Enter product id");
-        int addReduce = Integer.parseInt(getToken("Enter the amount to change the product by.\n"
-                                         + "If you wish to reduce, enter a negative number"));
-        result = warehouse.changeProductQuantity(clientID, productID, addReduce);
-        if (result != null){
-            System.out.println(" Successfully adjusted " + result.getName());
+        String productID = (String)JOptionPane.showInputDialog(
+                frame,
+                "Enter the product ID\n",
+                "Add Product",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                null,
+                "P1");
+        result = warehouse.returnProduct(clientID, productID);
+        if (result != 0){
+            JOptionPane.showMessageDialog(frame,
+                    "Successfully removed the product");
         } else {
-            System.out.println("Product quantity could not be adjusted");
+            JOptionPane.showMessageDialog(frame,
+                    "Product could not be removed",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    public void showCart()
-    {
+    public void changeQuantity() {
+        Product result;
         String clientID = WarehouseContext.instance().getUser();
-        System.out.print(warehouse.getClientCartProducts(clientID));
+        String productID = (String)JOptionPane.showInputDialog(
+                frame,
+                "Enter the product ID\n",
+                "Change Quantity",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                null,
+                "P1");
+        int addReduce = Integer.parseInt((String) JOptionPane.showInputDialog(
+                frame,
+                "Enter the amount to change the product by.\n"
+                        + "If you wish to reduce, enter a negative number",
+                "Change Quantity",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                null,
+                "1"));
+        result = warehouse.changeProductQuantity(clientID, productID, addReduce);
+        if (result != null){
+            JOptionPane.showMessageDialog(frame,
+                    "Successfully adjusted " + result.getName());
+        } else {
+            JOptionPane.showMessageDialog(frame,
+                    "Product quantity could not be adjusted",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+
+    public String showCart() {
+        String clientID = WarehouseContext.instance().getUser();
+        return warehouse.getClientCartProducts(clientID);
+    }
+
+    public void updateCartDisplay() {
+         ta.setText(showCart());
     }
 
     public void checkOut() {
@@ -154,46 +195,92 @@ public class ClientCartState extends WarehouseState {
         Iterator cartProducts = warehouse.getClientCartData(clientID);
         while (cartProducts.hasNext()){
             Product product = (Product)(cartProducts.next());
-            if (yesOrNo(product.getName())) {
+            if ((JOptionPane.showConfirmDialog(
+                    frame,
+                    "Confirm 1 " + product.getName() + "?",
+                    "Confirm Checkout",
+                    JOptionPane.YES_NO_OPTION)) == 0) {
                 result = warehouse.checkOut(product.getId(), clientID);
                 if (result != null){
-                    System.out.println("Successfully checked out " + result.getName());
+                    JOptionPane.showMessageDialog(frame,
+                            "Successfully checked out " + result.getName());
                 } else {
-                    System.out.println("Product is not able to be checked out");
+                    JOptionPane.showMessageDialog(frame,
+                            "Product is not able to be checked out",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
     }
 
-    public void process() {
-        int command;
-        help();
-        while ((command = getCommand()) != EXIT) {
-            switch (command) {
-
-                case ADD_PRODUCTS_TO_CART:       addProductsToClientCart();
-                    break;
-                case REMOVE_PRODUCTS_FROM_CART:       removeProductsFromClientCart();
-                    break;
-                case CHANGE_QUANTITY:       changeQuantity();
-                    break;
-                case SHOW_CLIENT_CART:       showCart();
-                    break;
-                case CHECK_OUT:       checkOut();
-                    break;
-                case HELP:              help();
-                    break;
-            }
+    public void actionPerformed(ActionEvent ae) {
+        int command = Integer.parseInt(ae.getActionCommand());
+        switch (command) {
+            case EXIT:       logout();
+                break;
+            case ADD_PRODUCTS_TO_CART:       addProductsToClientCart(); updateCartDisplay();
+                break;
+            case REMOVE_PRODUCTS_FROM_CART:       removeProductsFromClientCart(); updateCartDisplay();
+                break;
+            case CHANGE_QUANTITY:       changeQuantity(); updateCartDisplay();
+                break;
+            case SHOW_CLIENT_CART:       showCart();
+                break;
+            case CHECK_OUT:       checkOut();
+                break;
+            /*case HELP:              help();
+        break;*/
         }
-        logout();
+
     }
 
     public void run() {
-        process();
+        //frame.setDefaultCloseOperation();
+        frame.setSize(630, 150);
+
+        //Creating the panel at bottom and adding components
+        JPanel panel = new JPanel(); // the panel is not visible in output
+        JButton back = new JButton("Back");
+        back.addActionListener(this);
+        back.setActionCommand(String.valueOf(EXIT));
+
+        JButton addProducts = new JButton("Add to Cart");
+        addProducts.addActionListener(this);
+        addProducts.setActionCommand(String.valueOf(ADD_PRODUCTS_TO_CART));
+
+        JButton removeProducts = new JButton("Remove from Cart");
+        removeProducts.addActionListener(this);
+        removeProducts.setActionCommand(String.valueOf(REMOVE_PRODUCTS_FROM_CART));
+
+        JButton changeQuantities = new JButton("Change Product Quantity");
+        changeQuantities.addActionListener(this);
+        changeQuantities.setActionCommand(String.valueOf(CHANGE_QUANTITY));
+
+        JButton checkOut = new JButton("Check Out");
+        checkOut.addActionListener(this);
+        checkOut.setActionCommand(String.valueOf(CHECK_OUT));
+
+        panel.add(back); // Components Added using Flow Layout
+        panel.add(addProducts);
+        panel.add(removeProducts);
+        panel.add(changeQuantities);
+        panel.add(checkOut);
+
+        // Text Area at the Center
+        updateCartDisplay();
+
+        //Adding Components to the frame.
+        frame.getContentPane().add(BorderLayout.SOUTH, panel);
+        //frame.getContentPane().add(BorderLayout.NORTH, mb);
+        frame.getContentPane().add(BorderLayout.CENTER, ta);
+        frame.setVisible(true);
+
     }
 
     public void logout()
     {
+        frame.setVisible(false);
         (WarehouseContext.instance()).changeState(1); // exit with a code 2
     }
 }

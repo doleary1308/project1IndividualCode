@@ -1,3 +1,5 @@
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
@@ -15,6 +17,8 @@ public class LoginState extends WarehouseState implements ActionListener {
         super();
         //  context = WarehouseContext.instance();
     }
+
+    public JFrame frame = new JFrame("Login");
 
     public static LoginState instance() {
         if (instance == null) {
@@ -60,57 +64,84 @@ public class LoginState extends WarehouseState implements ActionListener {
     }
     private void manager(){
         (WarehouseContext.instance()).setLogin(WarehouseContext.IsManager);
+        frame.setVisible(false);
         (WarehouseContext.instance()).changeState(3);
     }
 
     private void clerk(){
         (WarehouseContext.instance()).setLogin(WarehouseContext.IsClerk);
+        frame.setVisible(false);
         (WarehouseContext.instance()).changeState(0);
     }
 
     private void client(){
-        String clientID = getToken("Input the client id: ");
+        String clientID = (String) JOptionPane.showInputDialog(
+                frame,
+                "Enter the client ID\n",
+                "Client",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                null,
+                "C1");
         if (Warehouse.instance().searchMembership(clientID) != null){
             (WarehouseContext.instance()).setLogin(WarehouseContext.IsUser);
+            frame.setVisible(false);
             (WarehouseContext.instance()).setUser(clientID);
             (WarehouseContext.instance()).changeState(1);
         }
         else
-            System.out.println("Invalid client id.");
-    }
-
-    public void process() {
-        int command;
-        System.out.println("Input 0 to login as clerk\n"+
-                "Input 1 to login as client\n" +
-                "Input 2 to login as manager\n"+
-                "Input 3 to exit the system\n");
-        while ((command = getCommand()) != EXIT) {
-
-            switch (command) {
-                case CLERK_LOGIN:       clerk();
-                    break;
-                case CLIENT_LOGIN:      client();
-                    break;
-                case MANAGER_LOGIN:     manager();
-                    break;
-                default:                System.out.println("Invalid choice");
-
-            }
-            System.out.println("Please input 0 to login as clerk\n"+
-                    "input 1 to login as client\n" +
-                    "input 2 to login as manager\n"+
-                    "input 3 to exit the system\n");
-        }
-        (WarehouseContext.instance()).changeState(2);
+            JOptionPane.showMessageDialog(frame,
+                    "Invalid client ID",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
     }
 
     public void run() {
-        process();
+        //frame.setDefaultCloseOperation();
+        frame.setSize(480, 150);
+
+        //Creating the panel at bottom and adding components
+        JPanel panel = new JPanel(); // the panel is not visible in output
+        JButton back = new JButton("Exit");
+        back.addActionListener(this);
+        back.setActionCommand(String.valueOf(EXIT));
+
+        JButton clientLogin = new JButton("Client");
+        clientLogin.addActionListener(this);
+        clientLogin.setActionCommand(String.valueOf(CLIENT_LOGIN));
+
+        JButton managerLogin = new JButton("Manager");
+        managerLogin.addActionListener(this);
+        managerLogin.setActionCommand(String.valueOf(MANAGER_LOGIN));
+
+        JButton clerkLogin = new JButton("Clerk");
+        clerkLogin.addActionListener(this);
+        clerkLogin.setActionCommand(String.valueOf(CLERK_LOGIN));
+
+        panel.add(back); // Components Added using Flow Layout
+        panel.add(clientLogin);
+        panel.add(clerkLogin);
+        panel.add(managerLogin);
+
+        //Adding Components to the frame.
+        frame.getContentPane().add(BorderLayout.SOUTH, panel);
+        //frame.getContentPane().add(BorderLayout.NORTH, mb);
+        frame.setVisible(true);
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent ae) {
+        int command = Integer.parseInt(ae.getActionCommand());
+        switch (command) {
+            case EXIT:       System.exit(0);
+                break;
+            case CLIENT_LOGIN:       client();
+                break;
+            case MANAGER_LOGIN:       manager();
+                break;
+            case CLERK_LOGIN:       clerk();
+                break;
+        }
 
     }
 }

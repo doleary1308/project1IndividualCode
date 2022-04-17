@@ -46,9 +46,9 @@ public class Warehouse implements Serializable {
   public Client searchMembership(String clientId) {
     return clientList.search(clientId);
   }
-  public void printClients()
+  public String printClients()
   {
-    System.out.print(clientList.toString());
+    return clientList.toString();
   }
   public String clientsOutstanding()
   {
@@ -200,9 +200,9 @@ public class Warehouse implements Serializable {
 
     return client;
   }
-  public void printProducts()
+  public String printProducts()
   {
-    System.out.print(productList.toString());
+    return productList.toString();
   }
   public String printProductWaitlist(String productID)
   {

@@ -1,3 +1,5 @@
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
@@ -18,6 +20,9 @@ public class ManagerState extends WarehouseState implements ActionListener {
         warehouse = Warehouse.instance();
        // context = WarehouseContext.instance();
     }
+
+    public JFrame frame = new JFrame("Manager Menu");
+    public JTextArea ta = new JTextArea();
 
     public static ManagerState instance() {
         if (instance == null) {
@@ -95,38 +100,68 @@ public class ManagerState extends WarehouseState implements ActionListener {
 
     public void addProductsToWarehouse() {
         Product result;
-        do {
-            String name = getToken("Enter name");
-            int quantity = Integer.parseInt(getToken("Enter quantity"));
-            float price = Float.parseFloat(getToken("Enter price per unit"));
-            result = warehouse.addProduct(name, quantity, price);
-            if (result != null) {
-                System.out.println(result);
-            } else {
-                System.out.println("Product could not be added");
-            }
-            if (!yesOrNo("Add more products?")) {
-                break;
-            }
-        } while (true);
+        String name = (String)JOptionPane.showInputDialog(
+                frame,
+                "Enter the product name\n",
+                "Add Product",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                null,
+                "");
+        int quantity = Integer.parseInt((String)JOptionPane.showInputDialog(
+                frame,
+                "Enter the quantity to stock\n",
+                "Add Product",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                null,
+                ""));
+        float price = Float.parseFloat((String)JOptionPane.showInputDialog(
+                frame,
+                "Enter the price per unit\n",
+                "Add Product",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                null,
+                "P1"));
+        result = warehouse.addProduct(name, quantity, price);
+        if (result != null) {
+            ta.append(result + "\n");
+        } else {
+            JOptionPane.showMessageDialog(frame,
+                    "Product could not be added",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
     public void acceptShipment() {
         Iterator result;
-        do {
-            String productID = getToken("Enter product id");
-            int quantity = Integer.parseInt(getToken("Enter the amount to add"));
-            result = warehouse.acceptShipment(productID, quantity);
-            if (result != null) {
-                System.out.println("Removed waits for: " + result);
-                System.out.println("Stock remaining for product: " + warehouse.searchProducts(productID));
-            } else {
-                System.out.println("No valid waits left");
-            }
-            if (!yesOrNo("Process more products?")) {
-                break;
-            }
-        } while (true);
-
+        String productID = (String)JOptionPane.showInputDialog(
+                frame,
+                "Enter the product ID\n",
+                "Accept Shipment",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                null,
+                "P1");
+        int quantity = Integer.parseInt((String)JOptionPane.showInputDialog(
+                frame,
+                "Enter the amount to stock\n",
+                "Accept Shipment",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                null,
+                "P1"));
+        result = warehouse.acceptShipment(productID, quantity);
+        if (result != null) {
+            JOptionPane.showMessageDialog(frame,
+                    "Removed waits for: " + result +
+                            "Stock remaining for product: " +
+                            warehouse.searchProducts(productID));
+        } else {
+            JOptionPane.showMessageDialog(frame,
+                    "No valid waits left");
+        }
     }
 
     public void clerkMenu()
@@ -136,33 +171,59 @@ public class ManagerState extends WarehouseState implements ActionListener {
 
     public void logout()
     {
-        (WarehouseContext.instance()).changeState(2); // exit with a code 0
+        frame.setVisible(false);
+        (WarehouseContext.instance()).changeState(2);
     }
 
-
-    public void process() {
-        int command;
-        help();
-        while ((command = getCommand()) != EXIT) {
-            switch (command) {
-                case ADD_PRODUCTS_TO_WAREHOUSE:         addProductsToWarehouse();
-                    break;
-                case ACCEPT_SHIPMENT:      acceptShipment();
-                    break;
-                case CLERKMENU:          clerkMenu();
-                    break;
-                case HELP:              help();
-                    break;
-            }
-        }
-        logout();
-    }
     public void run() {
-        process();
+        //frame.setDefaultCloseOperation();
+        frame.setSize(480, 150);
+
+        //Creating the panel at bottom and adding components
+        JPanel panel = new JPanel(); // the panel is not visible in output
+        JButton back = new JButton("Back");
+        back.addActionListener(this);
+        back.setActionCommand(String.valueOf(EXIT));
+
+        JButton addProducts = new JButton("Add a Product");
+        addProducts.addActionListener(this);
+        addProducts.setActionCommand(String.valueOf(ADD_PRODUCTS_TO_WAREHOUSE));
+
+        JButton acceptShipment = new JButton("Accept a Shipment");
+        acceptShipment.addActionListener(this);
+        acceptShipment.setActionCommand(String.valueOf(ACCEPT_SHIPMENT));
+
+        JButton clerkMenu = new JButton("Become a Clerk");
+        clerkMenu.addActionListener(this);
+        clerkMenu.setActionCommand(String.valueOf(CLERKMENU));
+
+        panel.add(back); // Components Added using Flow Layout
+        panel.add(addProducts);
+        panel.add(acceptShipment);
+        panel.add(clerkMenu);
+
+        //Adding Components to the frame.
+        frame.getContentPane().add(BorderLayout.SOUTH, panel);
+        //frame.getContentPane().add(BorderLayout.NORTH, mb);
+        frame.getContentPane().add(BorderLayout.CENTER, ta);
+        frame.setVisible(true);
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent ae) {
+        int command = Integer.parseInt(ae.getActionCommand());
+        switch (command) {
+            case EXIT:       logout();
+                break;
+            case ADD_PRODUCTS_TO_WAREHOUSE:       addProductsToWarehouse();
+                break;
+            case ACCEPT_SHIPMENT:       acceptShipment();
+                break;
+            case CLERKMENU:       clerkMenu();
+                break;
+            /*case HELP:              help();
+        break;*/
+        }
 
     }
 }

@@ -1,3 +1,5 @@
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
@@ -18,6 +20,9 @@ public class ClerkQueryState extends WarehouseState implements ActionListener {
         warehouse = Warehouse.instance();
         //context = LibContext.instance();
     }
+
+    public JFrame frame = new JFrame("Client Query");
+    public JTextArea ta = new JTextArea();
 
     public static ClerkQueryState instance() {
         if (instance == null) {
@@ -95,49 +100,77 @@ public class ClerkQueryState extends WarehouseState implements ActionListener {
 
     public void queryAll()
     {
-        warehouse.printClients();
+        ta.setText(warehouse.printClients());
     }
 
     public void queryOutstanding()
     {
-        System.out.print(warehouse.clientsOutstanding());
+        ta.setText(warehouse.clientsOutstanding());
     }
 
     public void queryInactive()
     {
-        System.out.print(warehouse.clientsInactive());
+        ta.setText(warehouse.clientsInactive());
     }
 
 
     public void logout()
     {
+        frame.setVisible(false);
         (WarehouseContext.instance()).changeState(0);
     }
 
 
-    public void process() {
-        int command;
-        help();
-        while ((command = getCommand()) != EXIT) {
-            switch (command) {
-                case ALL_CLIENTS:        queryAll();
-                    break;
-                case CLIENTS_OUTSTANDING:        queryOutstanding();
-                    break;
-                case CLIENTS_INACTIVE:        queryInactive();
-                    break;
-                case HELP:              help();
-                    break;
-            }
-        }
-        logout();
-    }
     public void run() {
-        process();
+        //frame.setDefaultCloseOperation();
+        frame.setSize(580, 300);
+
+        //Creating the panel at bottom and adding components
+        JPanel panel = new JPanel(); // the panel is not visible in output
+        JButton back = new JButton("Back");
+        back.addActionListener(this);
+        back.setActionCommand(String.valueOf(EXIT));
+
+        JButton allClients = new JButton("All Clients");
+        allClients.addActionListener(this);
+        allClients.setActionCommand(String.valueOf(ALL_CLIENTS));
+
+        JButton clientsOutstanding = new JButton("W/ Outstanding Balance");
+        clientsOutstanding.addActionListener(this);
+        clientsOutstanding.setActionCommand(String.valueOf(CLIENTS_OUTSTANDING));
+
+        JButton clientsInactive = new JButton("Inactive Clients");
+        clientsInactive.addActionListener(this);
+        clientsInactive.setActionCommand(String.valueOf(CLIENTS_INACTIVE));
+
+        panel.add(back); // Components Added using Flow Layout
+        panel.add(allClients);
+        panel.add(clientsOutstanding);
+        panel.add(clientsInactive);
+
+        ta.setText("Press a button to perform a client query");
+
+        //Adding Components to the frame.
+        frame.getContentPane().add(BorderLayout.SOUTH, panel);
+        frame.getContentPane().add(BorderLayout.CENTER, ta);
+        frame.setVisible(true);
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent ae) {
+        int command = Integer.parseInt(ae.getActionCommand());
+        switch (command) {
+            case EXIT:       logout();
+                break;
+            case ALL_CLIENTS:       queryAll();
+                break;
+            case CLIENTS_OUTSTANDING:       queryOutstanding();
+                break;
+            case CLIENTS_INACTIVE:       queryInactive();
+                break;
+            /*case HELP:              help();
+        break;*/
+        }
 
     }
 }

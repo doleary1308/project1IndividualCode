@@ -90,19 +90,18 @@ public class WarehouseContext {
     //NA = Not Applicable
     //CV = Varies by Context
     nextState[0][0] =-2;nextState[0][1] = 1;nextState[0][2] = 2;nextState[0][3] = 3;nextState[0][4] =-2;nextState[0][5] = 5;
-    //Ck->Ck: NA          Ck->Ct: Cl          Ck->Lg: CV          Ck->Mg              Ck->Cc: NA          Ck->Cq: Cq
-    nextState[1][0] = 2;nextState[1][1] = 0;nextState[1][2] =-2;nextState[1][3] =-2;nextState[1][4] = 4;nextState[1][5] =-2;
-    //Ct->Ck: CV          Ct->Ct: NA          Ct->Lg: CV          Ct->Mg: NA          Ct->Cc: Cc          Ct->Cq: NA
+    //Ck->Ck: NA          Ck->Ct: Cl          Ck->Lg: Lg          Ck->Mg              Ck->Cc: NA          Ck->Cq: Cq
+    nextState[1][0] = 0;nextState[1][1] = 0;nextState[1][2] = 2;nextState[1][3] =-2;nextState[1][4] = 4;nextState[1][5] =-2;
+    //Ct->Ck: Ck          Ct->Ct: NA          Ct->Lg: Lg          Ct->Mg: NA          Ct->Cc: Cc          Ct->Cq: NA
     nextState[2][0] = 0;nextState[2][1] = 1;nextState[2][2] =-1;nextState[2][3] = 3;nextState[2][4] =-2;nextState[2][5] =-2;
     //Lg->Ck: Ck          Lg->Ct: Cl          Lg->Lg: NA          Lg->Mg: Mg          Lg->Cc: NA          Lg->Cq: NA
     nextState[3][0] = 0;nextState[3][1] =-2;nextState[3][2] = 2;nextState[3][3] = 2;nextState[3][4] =-2;nextState[3][5] =-2;
-    //Mg->Ck: Ck          Mg->Ct: NA          Mg->Lg: CV/Lg?      Mg->Mg: NA          Mg->Cc: NA          Mg->Cq: NA
+    //Mg->Ck: Ck          Mg->Ct: NA          Mg->Lg: Lg          Mg->Mg: NA          Mg->Cc: NA          Mg->Cq: NA
     nextState[4][0] =-2;nextState[4][1] = 1;nextState[4][2] =-2;nextState[4][3] =-2;nextState[4][4] =-2;nextState[4][5] =-2;
     //Cc->Ck: NA          Cc->Ct: Ct          Cc->Lg: NA          Cc->Mg: NA          Cc->Cc: NA          Cc->Cq: NA
     nextState[5][0] = 0;nextState[5][1] = 1;nextState[5][2] =-2;nextState[5][3] =-2;nextState[5][4] =-2;nextState[5][5] =-2;
     //Cq->Ck: Ck          Cq->Ct: NA          Cq->Lg: NA          Cq->Mg: NA          Cq->Cc: NA          Cq->Cq: NA
-    // nextState[3][2] seems confused?
-    //Whatever, it works ¯\_(ツ)_/¯
+
 
     currentState = 2;
   }
